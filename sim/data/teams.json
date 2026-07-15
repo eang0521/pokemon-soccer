@@ -1,0 +1,10 @@
+{
+  "team_kanto": {
+    "name": "Team Kanto",
+    "roster": ["pikachu", "machamp", "alakazam", "rhydon", "gengar", "slowbro"]
+  },
+  "team_fire": {
+    "name": "Team Fire",
+    "roster": ["charizard", "arcanine", "rapidash", "magmar", "flareon", "moltres"]
+  }
+}

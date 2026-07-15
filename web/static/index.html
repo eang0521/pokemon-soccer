@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokémon Soccer</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #0f1117;
+  color: #e2e8f0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  gap: 14px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: #fbbf24;
+  text-transform: uppercase;
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* ── App layout ──────────────────────────────────────────── */
+.app-layout {
+  display: flex;
+  gap: 14px;
+  width: 100%;
+  max-width: 1280px;
+  align-items: flex-start;
+}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+#sidebar {
+  width: 340px;
+  flex-shrink: 0;
+  background: #1e2130;
+  border: 1px solid #2d3250;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 16px;
+  height: calc(100vh - 32px);
+  overflow: hidden;
+}
+
+/* team tabs */
+.team-tabs {
+  display: flex;
+  border-bottom: 1px solid #2d3250;
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px 6px;
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: color .15s, background .15s;
+}
+.tab-btn:hover { color: #e2e8f0; background: #252840; }
+.tab-btn.active-t0 { color: #60a5fa; border-bottom: 2px solid #60a5fa; }
+.tab-btn.active-t1 { color: #f87171; border-bottom: 2px solid #f87171; }
+
+/* team panel */
+.team-panel { flex-shrink: 0; padding: 10px 12px 8px; border-bottom: 1px solid #2d3250; }
+
+.team-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+
+.team-name-input {
+  flex: 1;
+  background: #0f1117;
+  color: #e2e8f0;
+  border: 1px solid #2d3250;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.85rem;
+  min-width: 0;
+}
+.team-name-input:focus { outline: none; border-color: #fbbf24; }
+
+.rand-team-btn {
+  padding: 4px 7px;
+  background: #334155;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: background .15s;
+}
+.rand-team-btn:hover { background: #475569; }
+
+.mode-toggle { display: flex; gap: 4px; flex-shrink: 0; }
+.mode-btn {
+  padding: 4px 9px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 5px;
+  border: 1px solid #2d3250;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  transition: all .15s;
+}
+.mode-btn:hover { color: #e2e8f0; border-color: #475569; }
+.mode-btn.active { background: #334155; color: #e2e8f0; border-color: #475569; }
+
+/* auto roster: row of 6 mini sprites */
+.roster-auto {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.auto-slot {
+  width: 42px;
+  height: 52px;
+  border-radius: 6px;
+  border: 1px solid #2d3250;
+  background: #161927;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 0.6rem;
+  color: #475569;
+  cursor: pointer;
+  overflow: hidden;
+}
+.auto-slot img { width: 36px; height: 36px; object-fit: contain; display: block; }
+.auto-slot .slot-name { font-size: 0.55rem; color: #94a3b8; text-align: center; line-height: 1.1; padding: 0 1px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; width: 100%; }
+.auto-slot .remove-x {
+  position: absolute; top: 1px; right: 2px;
+  font-size: 0.7rem; color: #ef4444; cursor: pointer; line-height: 1;
+  display: none;
+}
+.auto-slot:hover .remove-x { display: block; }
+.auto-slot.empty { color: #334155; font-size: 1.2rem; }
+
+/* manual roster: role-labelled rows */
+.roster-manual { display: flex; flex-direction: column; gap: 3px; }
+.role-slot {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid #2d3250;
+  background: #161927;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  min-height: 38px;
+}
+.role-slot:hover { border-color: #475569; }
+.role-slot.active-slot { border-color: #fbbf24; background: #1f2535; }
+.role-badge {
+  font-size: 0.65rem; font-weight: 700; color: #64748b;
+  background: #1e293b; border-radius: 3px;
+  padding: 2px 4px; flex-shrink: 0; width: 26px; text-align: center;
+}
+.role-slot img { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
+.slot-pname { font-size: 0.75rem; color: #cbd5e1; flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.slot-empty-label { font-size: 0.72rem; color: #334155; flex: 1; }
+.slot-remove {
+  font-size: 0.75rem; color: #ef4444; cursor: pointer; padding: 0 2px; flex-shrink: 0;
+}
+
+/* ── Pokémon browser ──────────────────────────────────────── */
+#poke-browser {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.browser-bar {
+  padding: 8px 12px 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #1a1f2e;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #1e2130;
+}
+
+#poke-search {
+  flex: 1;
+  background: #0f1117;
+  color: #e2e8f0;
+  border: 1px solid #2d3250;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.8rem;
+}
+#poke-search:focus { outline: none; border-color: #fbbf24; }
+
+.adding-label { font-size: 0.7rem; color: #64748b; white-space: nowrap; }
+.adding-label strong { font-size: 0.75rem; }
+.adding-label strong.t0 { color: #60a5fa; }
+.adding-label strong.t1 { color: #f87171; }
+
+#poke-grid {
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.poke-card {
+  background: #161927;
+  border: 1px solid #2d3250;
+  border-radius: 7px;
+  padding: 4px 3px 3px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: border-color .12s, background .12s;
+  overflow: hidden;
+}
+.poke-card:hover:not(.taken) { border-color: #fbbf24; background: #1f2535; }
+
+.poke-card img {
+  width: 64px; height: 64px;
+  object-fit: contain;
+  display: block;
+}
+.poke-name { font-size: 0.62rem; color: #94a3b8; text-align: center; margin-top: 2px; line-height: 1.2; }
+
+/* team badge overlay */
+.team-badge {
+  position: absolute; top: 2px; right: 2px;
+  font-size: 0.58rem; font-weight: 800;
+  padding: 1px 3px;
+  border-radius: 3px;
+  line-height: 1.2;
+}
+.badge-t0 { background: #1d4ed8; color: #bfdbfe; }
+.badge-t1 { background: #991b1b; color: #fecaca; }
+
+.poke-card.taken { opacity: 0.4; cursor: not-allowed; }
+.poke-card.taken:hover { border-color: #2d3250; background: #161927; }
+
+.poke-ovr { font-size: 0.58rem; color: #fbbf24; font-weight: 700; margin-top: 1px; }
+
+.team-ovr-sub { font-size: 0.72rem; color: #94a3b8; margin-top: 1px; }
+.home-name-wrap { min-width: 130px; }
+.away-name-wrap { min-width: 130px; text-align: right; }
+
+/* ── Main content ────────────────────────────────────────── */
+#main-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Setup panel */
+#setup {
+  background: #1e2130;
+  border: 1px solid #2d3250;
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+#setup label { font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+
+select, input[type=number] {
+  background: #0f1117;
+  color: #e2e8f0;
+  border: 1px solid #2d3250;
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 0.88rem;
+  min-width: 120px;
+}
+select:focus, input[type=number]:focus { outline: none; border-color: #fbbf24; }
+
+#simulate-btn {
+  margin-top: 16px;
+  padding: 7px 20px;
+  background: #fbbf24;
+  color: #0f1117;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+#simulate-btn:hover:not(:disabled) { background: #f59e0b; }
+#simulate-btn:disabled { background: #374151; color: #6b7280; cursor: not-allowed; }
+
+#status { font-size: 0.8rem; color: #64748b; margin-top: 16px; min-width: 160px; }
+
+/* Scoreboard */
+#scoreboard {
+  background: #1e2130;
+  border: 1px solid #2d3250;
+  border-radius: 10px;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.team-name { font-weight: 700; font-size: 1rem; min-width: 130px; }
+.home-name  { color: #60a5fa; }
+.away-name  { color: #f87171; text-align: right; }
+.score { display: flex; align-items: center; gap: 10px; font-size: 2rem; font-weight: 800; }
+.score-sep { color: #475569; font-size: 1.4rem; }
+#clock { font-size: 0.82rem; color: #94a3b8; text-align: center; margin-top: 2px; }
+
+/* Possession bar */
+#poss-bar-wrap {
+  background: #1e2130; border: 1px solid #2d3250; border-radius: 10px;
+  padding: 7px 16px; display: flex; align-items: center; gap: 10px;
+}
+.poss-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: .06em; color: #64748b; }
+.poss-pct { font-size: 0.82rem; font-weight: 700; min-width: 36px; }
+#poss-home-pct { color: #60a5fa; text-align: right; }
+#poss-away-pct { color: #f87171; }
+#poss-bar { flex: 1; height: 8px; background: #f87171; border-radius: 4px; overflow: hidden; }
+#poss-fill { height: 100%; background: #60a5fa; width: 50%; }
+
+/* Canvas */
+#canvas-wrap { position: relative; }
+#pitch-canvas { width: 100%; border-radius: 8px; display: block; }
+
+/* Controls */
+#controls {
+  background: #1e2130;
+  border: 1px solid #2d3250;
+  border-radius: 10px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#play-btn {
+  width: 34px; height: 34px;
+  background: #3b82f6; color: white; border: none; border-radius: 50%;
+  font-size: 0.95rem; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+#play-btn:hover { background: #2563eb; }
+#play-btn:disabled { background: #374151; cursor: not-allowed; }
+#scrubber { flex: 1; accent-color: #3b82f6; cursor: pointer; }
+.speed-group { display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.speed-group label { font-size: 0.72rem; color: #94a3b8; }
+#speed-slider { width: 80px; accent-color: #fbbf24; }
+#speed-label  { font-size: 0.78rem; color: #fbbf24; min-width: 34px; }
+
+/* Event log */
+#event-log-wrap {
+  background: #1e2130; border: 1px solid #2d3250; border-radius: 10px;
+  padding: 8px 14px; max-height: 130px; overflow-y: auto;
+}
+#event-log-wrap h3 { font-size: 0.68rem; text-transform: uppercase; letter-spacing: .08em; color: #64748b; margin-bottom: 5px; }
+.log-entry { font-size: 0.78rem; color: #cbd5e1; padding: 1px 0; border-bottom: 1px solid #1a1f2e; }
+.log-entry .min-tag { color: #fbbf24; font-weight: 600; margin-right: 5px; }
+.log-entry.goal { color: #4ade80; font-weight: 600; }
+.log-entry.save { color: #60a5fa; }
+.log-entry.half_time, .log-entry.full_time { color: #f59e0b; font-weight: 700; }
+
+/* Goal scorers table */
+#goals-table-wrap {
+  background: #1e2130; border: 1px solid #2d3250; border-radius: 10px;
+  padding: 8px 14px;
+}
+#goals-table-wrap h3 { font-size: 0.68rem; text-transform: uppercase; letter-spacing: .08em; color: #64748b; margin-bottom: 5px; }
+#goals-table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+#goals-table th { color: #64748b; font-weight: 600; text-align: left; padding: 2px 6px; font-size: 0.68rem; text-transform: uppercase; letter-spacing: .05em; }
+#goals-table td { color: #cbd5e1; padding: 3px 6px; border-top: 1px solid #1a1f2e; }
+#goals-table .no-goals { color: #475569; text-align: center; font-style: italic; }
+
+/* Legend */
+#legend {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  font-size: 0.72rem; color: #64748b; justify-content: center;
+}
+.legend-item { display: flex; align-items: center; gap: 4px; }
+.legend-dot { width: 11px; height: 11px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Stat guide ──────────────────────────────────────────── */
+.tab-btn.active-guide { color: #fbbf24; border-bottom: 2px solid #fbbf24; }
+
+#guide-panel {
+  display: none;
+  overflow-y: auto;
+  flex: 1;
+  padding: 10px 12px;
+  min-height: 0;
+  flex-direction: column;
+  gap: 7px;
+}
+#guide-panel.visible { display: flex; }
+
+.stat-card {
+  background: #161927;
+  border: 1px solid #2d3250;
+  border-radius: 8px;
+  padding: 9px 11px;
+  flex-shrink: 0;
+}
+.stat-card-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 5px;
+}
+.stat-abbr {
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: .07em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.stat-card-header h3 { font-size: 0.82rem; font-weight: 700; color: #e2e8f0; }
+.stat-desc {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  line-height: 1.45;
+  margin-bottom: 7px;
+}
+.stat-formula {
+  font-family: 'Consolas', 'Cascadia Code', monospace;
+  font-size: 0.68rem;
+  color: #fbbf24;
+  background: #0d1020;
+  padding: 5px 9px;
+  border-radius: 5px;
+  border-left: 2px solid #fbbf24;
+  margin-bottom: 7px;
+  white-space: pre;
+}
+.stat-rows { display: flex; flex-direction: column; gap: 2px; }
+.stat-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.69rem;
+  padding: 1px 0;
+  color: #4b5563;
+}
+.stat-row span:last-child { color: #94a3b8; }
+.stat-row.hi span { color: #4ade80 !important; font-weight: 600; }
+.stat-note {
+  font-size: 0.67rem;
+  color: #475569;
+  font-style: italic;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+</style>
+</head>
+<body>
+
+<h1>⚽ Pokémon Soccer</h1>
+
+<div class="app-layout">
+
+  <!-- ── SIDEBAR ──────────────────────────────────────────── -->
+  <aside id="sidebar">
+
+    <!-- Team tabs -->
+    <div class="team-tabs">
+      <button class="tab-btn active-t0" data-team="0">Team 1</button>
+      <button class="tab-btn" data-team="1">Team 2</button>
+      <button class="tab-btn" id="guide-tab">📊 Guide</button>
+    </div>
+
+    <!-- Team 1 panel -->
+    <div class="team-panel" id="panel-0">
+      <div class="team-header">
+        <input class="team-name-input" id="tname-0" type="text" value="Team Kanto">
+        <button class="rand-team-btn" data-t="0" title="Random team">🎲</button>
+        <div class="mode-toggle">
+          <button class="mode-btn active" data-t="0" data-mode="auto">Auto</button>
+          <button class="mode-btn"        data-t="0" data-mode="manual">Manual</button>
+        </div>
+      </div>
+      <div id="roster-auto-0"   class="roster-auto"></div>
+      <div id="roster-manual-0" class="roster-manual" style="display:none"></div>
+    </div>
+
+    <!-- Team 2 panel -->
+    <div class="team-panel" id="panel-1" style="display:none">
+      <div class="team-header">
+        <input class="team-name-input" id="tname-1" type="text" value="Team Fire">
+        <button class="rand-team-btn" data-t="1" title="Random team">🎲</button>
+        <div class="mode-toggle">
+          <button class="mode-btn active" data-t="1" data-mode="auto">Auto</button>
+          <button class="mode-btn"        data-t="1" data-mode="manual">Manual</button>
+        </div>
+      </div>
+      <div id="roster-auto-1"   class="roster-auto"></div>
+      <div id="roster-manual-1" class="roster-manual" style="display:none"></div>
+    </div>
+
+    <!-- Stat guide panel -->
+    <div id="guide-panel">
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-abbr" style="background:#1e3a5f;color:#93c5fd">HP</span>
+          <h3>HP</h3>
+        </div>
+        <p class="stat-desc">Determines each Pokémon's stamina pool — how much total energy they carry into a match. Higher HP means a larger pool, so fatigue sets in later and off-ball recovery is faster. HP has no effect on role assignment.</p>
+        <div class="stat-formula">max_stamina = 0.5 + HP / 200</div>
+        <div class="stat-rows">
+          <div class="stat-row"><span>HP 45 (Jolteon)</span><span>max 0.73 — tires mid-match</span></div>
+          <div class="stat-row"><span>HP 65 (Pikachu)</span><span>max 0.83 — baseline</span></div>
+          <div class="stat-row"><span>HP 130 (Lapras)</span><span>max 1.15 — runs the full game</span></div>
+          <div class="stat-row"><span>HP 250 (Chansey)</span><span>max 1.75 — virtually never tires</span></div>
+          <div class="stat-row hi"><span>+10 HP</span><span>+0.05 stamina capacity</span></div>
+        </div>
+        <p class="stat-note">The 50% penalty threshold is relative to max_stamina, so a Lapras at 0.58 stamina is still "above 50%" and runs at full speed.</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-abbr" style="background:#7f1d1d;color:#fca5a5">ATK</span>
+          <h3>Attack</h3>
+        </div>
+        <p class="stat-desc">Sets shot speed. Also contributes half of shot quality against the goalkeeper (combined with Sp. Atk).</p>
+        <div class="stat-formula">shot_speed = 15 + (Attack / 150) × 15  m/s</div>
+        <div class="stat-rows">
+          <div class="stat-row"><span>Attack 45 (Slowbro)</span><span>19.5 m/s</span></div>
+          <div class="stat-row"><span>Attack 90</span><span>24.0 m/s</span></div>
+          <div class="stat-row"><span>Attack 130 (Machamp)</span><span>28.0 m/s</span></div>
+          <div class="stat-row hi"><span>+10 Attack</span><span>+1.0 m/s shot speed</span></div>
+        </div>
+        <p class="stat-note">Shot quality = (Atk + Sp.Atk) / 2 vs GK's save quality. Stamina does NOT affect shot speed.</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-abbr" style="background:#14532d;color:#86efac">DEF</span>
+          <h3>Defense</h3>
+        </div>
+        <p class="stat-desc">Tackle win rate and save quality. Defense plus Speed together determine how well a player wins the ball.</p>
+        <div class="stat-formula">tackle_score = Def × 0.6 + Speed × 0.4
+win_prob     = tackle_score / (tackle_score + carrier_speed)</div>
+        <div class="stat-rows">
+          <div class="stat-row"><span>Def 60, Spd 70 vs carrier Spd 80</span><span>46% win</span></div>
+          <div class="stat-row"><span>Def 100, Spd 70 vs carrier Spd 80</span><span>54% win</span></div>
+          <div class="stat-row"><span>Def 130, Spd 70 vs carrier Spd 80</span><span>59% win</span></div>
+          <div class="stat-row hi"><span>+10 Defense</span><span>+6 to tackle score</span></div>
+        </div>
+        <p class="stat-note">GK save quality = (Def + Sp.Def) / 2. Goalkeepers get a built-in 10× multiplier — targeting ~9% conversion rate at equal stats.</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-abbr" style="background:#3b0764;color:#d8b4fe">Sp.A</span>
+          <h3>Sp. Attack</h3>
+        </div>
+        <p class="stat-desc">Pass speed and comfortable passing range. Also contributes half of shot quality alongside Attack.</p>
+        <div class="stat-formula">pass_speed    = 10 + (Sp.Atk / 150) × 10  m/s
+comfort_range = Sp.Atk × 0.5  m</div>
+        <div class="stat-rows">
+          <div class="stat-row"><span>Sp.Atk 50</span><span>13.3 m/s, 25 m range</span></div>
+          <div class="stat-row"><span>Sp.Atk 100</span><span>16.7 m/s, 50 m range</span></div>
+          <div class="stat-row"><span>Sp.Atk 135 (Alakazam)</span><span>19.0 m/s, 67 m range</span></div>
+          <div class="stat-row hi"><span>+10 Sp.Atk</span><span>+0.67 m/s, +5 m range</span></div>
+        </div>
+        <p class="stat-note">Stamina does NOT affect pass speed — only passing accuracy degrades.</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-abbr" style="background:#7c2d12;color:#fdba74">Sp.D</span>
+          <h3>Sp. Defense</h3>
+        </div>
+        <p class="stat-desc">Paired with Defense to form save quality for goalkeepers. Also contributes half of shot quality when attacking.</p>
+        <div class="stat-formula">save_quality = (Def + Sp.Def) / 2
+save_prob    = (save_q × 10) / (shot_q + save_q × 10)</div>
+        <div class="stat-rows">
+          <div class="stat-row"><span>save_q 60 vs shot_q 100</span><span>86% saves</span></div>
+          <div class="stat-row"><span>save_q 80 vs shot_q 100</span><span>89% saves</span></div>
+          <div class="stat-row"><span>save_q 100 vs shot_q 100</span><span>91% saves</span></div>
+          <div class="stat-row hi"><span>+10 Sp.Def (GK)</span><span>+5 to save quality</span></div>
+        </div>
+        <p class="stat-note">The 10× multiplier targets ~9% conversion at equal stats — GK stat quality still matters at the margins.</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-abbr" style="background:#0c4a6e;color:#7dd3fc">SPE</span>
+          <h3>Speed</h3>
+        </div>
+        <p class="stat-desc">Field movement speed — the most universally impactful stat. Controls how fast a player reaches the ball, tracks runners, and retreats.</p>
+        <div class="stat-formula">field_speed = 4.0 + (Speed / 150) × 6.0  m/s</div>
+        <div class="stat-rows">
+          <div class="stat-row"><span>Speed 30 (Snorlax)</span><span>5.2 m/s</span></div>
+          <div class="stat-row"><span>Speed 90 (Pikachu)</span><span>7.6 m/s</span></div>
+          <div class="stat-row"><span>Speed 130 (Aerodactyl)</span><span>9.2 m/s</span></div>
+          <div class="stat-row"><span>Speed 150 (Electrode)</span><span>10.0 m/s</span></div>
+          <div class="stat-row hi"><span>+10 Speed</span><span>+0.4 m/s on pitch</span></div>
+        </div>
+        <p class="stat-note">Also contributes 40% to tackle defense (tracking). Stamina loss reduces effective speed below 50%.</p>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-card-header">
+          <span class="stat-abbr" style="background:#1c1917;color:#a8a29e">STA</span>
+          <h3>Stamina</h3>
+        </div>
+        <p class="stat-desc">Current energy as a fraction of max_stamina (set by HP). Penalty kicks in when relative stamina drops below 50% of the Pokémon's own pool — not a fixed 0.5 threshold.</p>
+        <div class="stat-formula">relative = stamina / max_stamina
+factor   = 1.0                          (relative ≥ 0.5)
+factor   = 0.4 + 0.6 × (relative/0.5)  (relative &lt; 0.5)</div>
+        <div class="stat-rows">
+          <div class="stat-row"><span>Relative 50% (threshold)</span><span>×1.0 — no penalty</span></div>
+          <div class="stat-row"><span>Relative 25%</span><span>×0.7 — 30% stat penalty</span></div>
+          <div class="stat-row"><span>Relative 0%</span><span>×0.4 — 60% stat penalty</span></div>
+          <div class="stat-row hi"><span>Ball carrier drain</span><span>2× base rate</span></div>
+          <div class="stat-row hi"><span>Off-ball recovery</span><span>0.5 × base × (HP/65) per tick</span></div>
+        </div>
+        <p class="stat-note">Half-time fully restores stamina to max_stamina. High-HP Pokémon off-ball barely lose stamina at all — low-HP ones accumulate fatigue throughout.</p>
+      </div>
+
+    </div><!-- /#guide-panel -->
+
+    <!-- Pokémon browser -->
+    <div id="poke-browser">
+      <div class="browser-bar">
+        <input id="poke-search" type="search" placeholder="Search…">
+        <span class="adding-label">Adding to: <strong id="adding-to-label" class="t0">Team 1</strong></span>
+      </div>
+      <div id="poke-grid"></div>
+    </div>
+
+  </aside>
+
+  <!-- ── MAIN CONTENT ─────────────────────────────────────── -->
+  <div id="main-content">
+
+    <!-- Setup -->
+    <div id="setup">
+      <div class="field">
+        <label>Duration (min)</label>
+        <input type="number" id="duration" value="40" min="1" max="90">
+      </div>
+      <div class="field">
+        <label>Seed</label>
+        <div style="display:flex;gap:5px;align-items:center">
+          <input type="number" id="seed" value="42" style="min-width:90px">
+          <button id="rand-seed-btn" title="Random seed"
+            style="padding:5px 8px;background:#334155;color:#e2e8f0;border:1px solid #475569;border-radius:6px;cursor:pointer;font-size:0.9rem;line-height:1"
+          >🎲</button>
+        </div>
+      </div>
+      <div class="field" style="align-items:center">
+        <label style="cursor:pointer;display:flex;align-items:center;gap:6px">
+          <input type="checkbox" id="extra-time-chk" style="width:14px;height:14px;accent-color:#fbbf24">
+          Extra Time &amp; Penalties
+        </label>
+      </div>
+      <button id="simulate-btn" disabled>▶ Simulate</button>
+      <div id="status">Pick 6 Pokémon for each team.</div>
+    </div>
+
+    <!-- Scoreboard -->
+    <div id="scoreboard">
+      <div class="home-name-wrap">
+        <div class="team-name home-name" id="home-name">Team 1</div>
+        <div class="team-ovr-sub" id="home-ovr"></div>
+      </div>
+      <div>
+        <div class="score">
+          <span id="home-score">0</span>
+          <span class="score-sep">–</span>
+          <span id="away-score">0</span>
+        </div>
+        <div id="clock">00:00</div>
+      </div>
+      <div class="away-name-wrap">
+        <div class="team-name away-name" id="away-name">Team 2</div>
+        <div class="team-ovr-sub" id="away-ovr"></div>
+      </div>
+    </div>
+
+    <!-- Possession bar -->
+    <div id="poss-bar-wrap">
+      <span class="poss-pct" id="poss-home-pct">50%</span>
+      <span class="poss-label">Poss</span>
+      <div id="poss-bar"><div id="poss-fill"></div></div>
+      <span class="poss-label">Poss</span>
+      <span class="poss-pct" id="poss-away-pct">50%</span>
+    </div>
+
+    <!-- Pitch -->
+    <div id="canvas-wrap">
+      <canvas id="pitch-canvas"></canvas>
+    </div>
+
+    <!-- Controls -->
+    <div id="controls">
+      <button id="play-btn" disabled>▶</button>
+      <input type="range" id="scrubber" min="0" max="1000" value="0" disabled>
+      <div class="speed-group">
+        <label>Speed</label>
+        <input type="range" id="speed-slider" min="1" max="10" value="4">
+        <span id="speed-label">×8</span>
+      </div>
+    </div>
+
+    <!-- Event log -->
+    <div id="event-log-wrap">
+      <h3>Match Events</h3>
+      <div id="event-log"></div>
+    </div>
+
+    <!-- Goal scorers -->
+    <div id="goals-table-wrap">
+      <h3>Goal Scorers</h3>
+      <table id="goals-table">
+        <thead><tr><th>Min</th><th>Scorer</th><th>Assist</th><th>Score</th></tr></thead>
+        <tbody id="goals-tbody"><tr><td colspan="4" class="no-goals">Run a simulation to see goals</td></tr></tbody>
+      </table>
+    </div>
+
+    <!-- Penalty shootout -->
+    <div id="penalty-wrap" style="display:none">
+      <h3 id="penalty-heading">Penalty Shootout</h3>
+      <table id="penalty-table" style="width:100%;border-collapse:collapse;font-size:0.82rem">
+        <thead>
+          <tr style="color:#94a3b8;text-align:left">
+            <th style="padding:4px 6px">Rnd</th>
+            <th style="padding:4px 6px">Team</th>
+            <th style="padding:4px 6px">Shooter</th>
+            <th style="padding:4px 6px">GK</th>
+            <th style="padding:4px 6px">Result</th>
+            <th style="padding:4px 6px">Score</th>
+          </tr>
+        </thead>
+        <tbody id="penalty-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Legend -->
+    <div id="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#1d4ed8"></div> Home GK</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div> Home field</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#b91c1c"></div> Away GK</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div> Away field</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#facc15;border:1px solid #fff"></div> Ball (loose)</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ffffff"></div> Ball (carried)</div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// Pokémon data & team state
+// ═══════════════════════════════════════════════════════════════════════
+
+let pokemonData = {};   // key → { key, name, pokedex_id, types, sprite_url, stats, scores }
+
+// Ordered slot IDs for manual mode
+const SLOT_ORDER = ['gk','def1','def2','mid1','mid2','fwd'];
+const SLOT_LABELS = { gk:'GK', def1:'DEF', def2:'DEF', mid1:'MID', mid2:'MID', fwd:'FWD' };
+const SLOT_ROLES  = { gk:'gk', def1:'def', def2:'def', mid1:'mid', mid2:'mid', fwd:'fwd' };
+
+const mkSlots = () => ({ gk:null, def1:null, def2:null, mid1:null, mid2:null, fwd:null });
+
+const teamState = [
+  { name:'Team Kanto', mode:'auto', roster:[], slots:mkSlots() },
+  { name:'Team Fire',  mode:'auto', roster:[], slots:mkSlots() },
+];
+
+let activeTeam  = 0;
+let activeSlot  = null;   // manual mode: currently selected slot id
+
+const DEFAULTS = [
+  ['pikachu','machamp','alakazam','rhydon','gengar','slowbro'],
+  ['charizard','arcanine','rapidash','magmar','flareon','moltres'],
+];
+
+// ═══════════════════════════════════════════════════════════════════════
+// Helpers
+// ═══════════════════════════════════════════════════════════════════════
+
+function teamKeys(t) {
+  const s = teamState[t];
+  return s.mode === 'auto'
+    ? [...s.roster]
+    : SLOT_ORDER.map(id => s.slots[id]).filter(Boolean);
+}
+
+function allSelected() {
+  return new Set([...teamKeys(0), ...teamKeys(1)]);
+}
+
+function whichTeam(key) {
+  if (teamKeys(0).includes(key)) return 0;
+  if (teamKeys(1).includes(key)) return 1;
+  return -1;
+}
+
+function teamReady(t) {
+  const s = teamState[t];
+  if (s.mode === 'auto') return s.roster.length === 6;
+  return SLOT_ORDER.every(id => s.slots[id] !== null);
+}
+
+function updateSimButton() {
+  const ok = teamReady(0) && teamReady(1);
+  document.getElementById('simulate-btn').disabled = ok ? false : true;
+  if (!ok) {
+    const c0 = teamKeys(0).length, c1 = teamKeys(1).length;
+    setStatus(`Team 1: ${c0}/6  •  Team 2: ${c1}/6`);
+  } else {
+    setStatus('Ready — click Simulate');
+  }
+  document.getElementById('home-name').textContent = teamState[0].name;
+  document.getElementById('away-name').textContent = teamState[1].name;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Load Pokémon + seed defaults
+// ═══════════════════════════════════════════════════════════════════════
+
+async function loadPokemon() {
+  try {
+    const resp = await fetch('/api/pokemon');
+    pokemonData = await resp.json();
+
+    for (let t = 0; t < 2; t++) {
+      for (const key of DEFAULTS[t]) {
+        if (pokemonData[key] && teamState[t].roster.length < 6)
+          teamState[t].roster.push(key);
+      }
+    }
+
+    renderGrid();
+    renderRoster(0);
+    renderRoster(1);
+    updateSimButton();
+  } catch(e) {
+    setStatus('Failed to load Pokémon: ' + e.message);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Click handler: add/remove from active team
+// ═══════════════════════════════════════════════════════════════════════
+
+function handlePokeClick(key) {
+  const t = activeTeam;
+  const s = teamState[t];
+  const team = whichTeam(key);
+
+  if (team === t) {
+    // Remove from this team
+    if (s.mode === 'auto') {
+      s.roster = s.roster.filter(k => k !== key);
+    } else {
+      for (const id of SLOT_ORDER) {
+        if (s.slots[id] === key) { s.slots[id] = null; break; }
+      }
+    }
+    activeSlot = null;
+  } else if (team >= 0) {
+    return; // taken by other team
+  } else {
+    // Add to team
+    if (s.mode === 'auto') {
+      if (s.roster.length < 6) s.roster.push(key);
+    } else {
+      const target = activeSlot || SLOT_ORDER.find(id => !s.slots[id]);
+      if (!target) return;
+      // Clear this key from any other slot first
+      for (const id of SLOT_ORDER) {
+        if (s.slots[id] === key) { s.slots[id] = null; break; }
+      }
+      s.slots[target] = key;
+      // Advance to next empty slot
+      activeSlot = SLOT_ORDER.find(id => id !== target && !s.slots[id]) || null;
+    }
+  }
+
+  renderGrid();
+  renderRoster(t);
+  updateSimButton();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Render Pokémon grid
+// ═══════════════════════════════════════════════════════════════════════
+
+function renderGrid() {
+  const search = (document.getElementById('poke-search').value || '').toLowerCase();
+  const grid   = document.getElementById('poke-grid');
+  grid.innerHTML = '';
+
+  const sorted = Object.values(pokemonData).sort((a,b) => a.pokedex_id - b.pokedex_id);
+
+  for (const poke of sorted) {
+    if (search && !poke.name.toLowerCase().includes(search)) continue;
+
+    const team = whichTeam(poke.key);
+    const taken = team >= 0;
+
+    const div = document.createElement('div');
+    div.className = 'poke-card' + (taken ? ' taken' : '');
+    div.title = poke.name + ' #' + poke.pokedex_id;
+
+    const fbSrc = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.pokedex_id}.png`;
+
+    const ovr = poke.ovr !== undefined ? Math.round(poke.ovr) : '';
+    div.innerHTML =
+      `<img src="${poke.sprite_url}" alt="${poke.name}" loading="lazy"
+            onerror="this.src='${fbSrc}'">` +
+      `<span class="poke-name">${poke.name}</span>` +
+      (ovr !== '' ? `<span class="poke-ovr">${ovr}</span>` : '') +
+      (team === 0 ? '<span class="team-badge badge-t0">T1</span>' :
+       team === 1 ? '<span class="team-badge badge-t1">T2</span>' : '');
+
+    if (!taken) div.addEventListener('click', () => handlePokeClick(poke.key));
+    else        div.addEventListener('click', () => handlePokeClick(poke.key)); // allow deselect
+
+    grid.appendChild(div);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Render roster panel for one team
+// ═══════════════════════════════════════════════════════════════════════
+
+function renderRoster(t) {
+  const s = teamState[t];
+
+  // Auto roster
+  const autoEl = document.getElementById(`roster-auto-${t}`);
+  autoEl.innerHTML = '';
+  for (let i = 0; i < 6; i++) {
+    const key  = s.roster[i] || null;
+    const slot = document.createElement('div');
+    slot.className = 'auto-slot' + (key ? '' : ' empty');
+
+    if (key && pokemonData[key]) {
+      const poke = pokemonData[key];
+      const fbSrc = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.pokedex_id}.png`;
+      slot.innerHTML =
+        `<img src="${poke.sprite_url}" alt="${poke.name}" onerror="this.src='${fbSrc}'">` +
+        `<span class="slot-name">${poke.name}</span>` +
+        `<span class="remove-x" data-key="${key}" data-t="${t}">×</span>`;
+      slot.querySelector('.remove-x').addEventListener('click', e => {
+        e.stopPropagation();
+        teamState[t].roster = teamState[t].roster.filter(k => k !== key);
+        renderGrid(); renderRoster(t); updateSimButton();
+      });
+    } else {
+      slot.textContent = '+';
+    }
+    autoEl.appendChild(slot);
+  }
+
+  // Manual roster
+  const manEl = document.getElementById(`roster-manual-${t}`);
+  manEl.innerHTML = '';
+  for (const id of SLOT_ORDER) {
+    const key   = s.slots[id];
+    const isAct = (t === activeTeam && activeSlot === id);
+    const row   = document.createElement('div');
+    row.className = 'role-slot' + (isAct ? ' active-slot' : '');
+
+    const badge = `<span class="role-badge">${SLOT_LABELS[id]}</span>`;
+
+    if (key && pokemonData[key]) {
+      const poke = pokemonData[key];
+      const fbSrc = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${poke.pokedex_id}.png`;
+      row.innerHTML =
+        badge +
+        `<img src="${poke.sprite_url}" alt="${poke.name}" onerror="this.src='${fbSrc}'">` +
+        `<span class="slot-pname">${poke.name}</span>` +
+        `<span class="slot-remove" data-key="${key}" data-t="${t}" data-id="${id}">×</span>`;
+      row.querySelector('.slot-remove').addEventListener('click', e => {
+        e.stopPropagation();
+        teamState[t].slots[id] = null;
+        renderGrid(); renderRoster(t); updateSimButton();
+      });
+    } else {
+      row.innerHTML = badge + `<span class="slot-empty-label">Click to assign</span>`;
+    }
+
+    row.addEventListener('click', e => {
+      if (e.target.classList.contains('slot-remove')) return;
+      if (t !== activeTeam) { switchTeam(t); }
+      activeSlot = (activeSlot === id) ? null : id;
+      renderRoster(t);
+    });
+
+    manEl.appendChild(row);
+  }
+
+  // Show correct view
+  autoEl.style.display = s.mode === 'auto' ? 'flex' : 'none';
+  manEl.style.display  = s.mode === 'manual' ? 'flex' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Tab / mode switching
+// ═══════════════════════════════════════════════════════════════════════
+
+function switchTeam(t) {
+  activeTeam = t;
+  activeSlot = null;
+
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.className = 'tab-btn' + (i === t ? ` active-t${t}` : '');
+  });
+
+  document.getElementById('panel-0').style.display = t === 0 ? '' : 'none';
+  document.getElementById('panel-1').style.display = t === 1 ? '' : 'none';
+
+  const lbl = document.getElementById('adding-to-label');
+  lbl.textContent = teamState[t].name;
+  lbl.className   = `t${t}`;
+
+  renderRoster(t);
+  renderGrid();
+}
+
+let guideOpen = false;
+
+function showGuide() {
+  guideOpen = true;
+  document.getElementById('guide-panel').classList.add('visible');
+  document.getElementById('panel-0').style.display   = 'none';
+  document.getElementById('panel-1').style.display   = 'none';
+  document.getElementById('poke-browser').style.display = 'none';
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.remove('active-t0','active-t1','active-guide');
+  });
+  document.getElementById('guide-tab').classList.add('active-guide');
+}
+
+function hideGuide() {
+  guideOpen = false;
+  document.getElementById('guide-panel').classList.remove('visible');
+  document.getElementById('poke-browser').style.display = '';
+}
+
+document.getElementById('guide-tab').addEventListener('click', () => {
+  if (guideOpen) { hideGuide(); switchTeam(activeTeam); }
+  else           { showGuide(); }
+});
+
+document.querySelectorAll('.tab-btn:not(#guide-tab)').forEach(btn => {
+  btn.addEventListener('click', () => { hideGuide(); switchTeam(parseInt(btn.dataset.team)); });
+});
+
+document.querySelectorAll('.mode-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const t    = parseInt(btn.dataset.t);
+    const mode = btn.dataset.mode;
+    teamState[t].mode = mode;
+    activeSlot = null;
+
+    // sync roster ↔ slots when switching modes
+    if (mode === 'manual' && teamState[t].roster.length > 0) {
+      // prefill slots from existing roster
+      const s = teamState[t];
+      const keys = [...s.roster];
+      for (const id of SLOT_ORDER) s.slots[id] = null;
+      for (let i = 0; i < Math.min(keys.length, 6); i++)
+        s.slots[SLOT_ORDER[i]] = keys[i];
+    } else if (mode === 'auto') {
+      // prefill roster from filled slots
+      const s   = teamState[t];
+      const filled = SLOT_ORDER.map(id => s.slots[id]).filter(Boolean);
+      s.roster = filled;
+    }
+
+    // update toggle button styles
+    document.querySelectorAll(`.mode-btn[data-t="${t}"]`).forEach(b => {
+      b.classList.toggle('active', b.dataset.mode === mode);
+    });
+
+    renderRoster(t);
+    renderGrid();
+    updateSimButton();
+  });
+});
+
+// Team name inputs
+document.querySelectorAll('.team-name-input').forEach(inp => {
+  inp.addEventListener('input', () => {
+    const t = parseInt(inp.id.replace('tname-',''));
+    teamState[t].name = inp.value;
+    if (t === activeTeam) {
+      const lbl = document.getElementById('adding-to-label');
+      lbl.textContent = inp.value;
+    }
+    updateSimButton();
+  });
+});
+
+document.getElementById('poke-search').addEventListener('input', renderGrid);
+
+// ═══════════════════════════════════════════════════════════════════════
+// Simulate
+// ═══════════════════════════════════════════════════════════════════════
+
+let matchData = null;
+let frameIdx  = 0;
+let playing   = false;
+let rafHandle = null;
+let lastRafTs = 0;
+let lastLoggedFrameIdx = -1;
+
+const SPEED_STEPS = [1, 2, 4, 8, 16, 32, 64, 128, 200, 400];
+function getSpeedMul() {
+  return SPEED_STEPS[parseInt(document.getElementById('speed-slider').value) - 1];
+}
+
+document.getElementById('simulate-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('simulate-btn');
+  btn.disabled = true;
+  stopAnimation();
+  setStatus('Simulating…');
+
+  const s0 = teamState[0], s1 = teamState[1];
+
+  // Build rosters and optional manual roles
+  let homeRoster, awayRoster, homeRoles = null, awayRoles = null;
+
+  if (s0.mode === 'manual') {
+    homeRoster = SLOT_ORDER.filter(id => s0.slots[id]).map(id => s0.slots[id]);
+    homeRoles  = {};
+    for (const id of SLOT_ORDER) {
+      if (s0.slots[id]) homeRoles[s0.slots[id]] = SLOT_ROLES[id];
+    }
+  } else {
+    homeRoster = [...s0.roster];
+  }
+
+  if (s1.mode === 'manual') {
+    awayRoster = SLOT_ORDER.filter(id => s1.slots[id]).map(id => s1.slots[id]);
+    awayRoles  = {};
+    for (const id of SLOT_ORDER) {
+      if (s1.slots[id]) awayRoles[s1.slots[id]] = SLOT_ROLES[id];
+    }
+  } else {
+    awayRoster = [...s1.roster];
+  }
+
+  const body = {
+    home_roster:      homeRoster,
+    away_roster:      awayRoster,
+    home_name:        s0.name,
+    away_name:        s1.name,
+    home_roles:       homeRoles,
+    away_roles:       awayRoles,
+    duration_minutes: parseInt(document.getElementById('duration').value),
+    seed:             parseInt(document.getElementById('seed').value),
+    sample_every:     3,
+    extra_time:       document.getElementById('extra-time-chk').checked,
+  };
+
+  try {
+    const resp = await fetch('/api/simulate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!resp.ok) throw new Error(await resp.text());
+    matchData = await resp.json();
+    frameIdx = 0;
+    setupUI();
+    renderPenaltyTable(matchData);
+    setStatus(`${matchData.frames.length} frames loaded.`);
+    drawFrame(0);
+    startAnimation();
+  } catch(e) {
+    setStatus('Error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// Canvas / pitch drawing
+// ═══════════════════════════════════════════════════════════════════════
+
+const canvas = document.getElementById('pitch-canvas');
+const ctx    = canvas.getContext('2d');
+const PAD    = 28;
+let pitchPx  = { x:PAD, y:PAD, w:0, h:0, scale:1 };
+
+function resizeCanvas() {
+  const wrapW = document.getElementById('canvas-wrap').clientWidth;
+  canvas.width = wrapW;
+  if (!matchData) { canvas.height = Math.round(wrapW * 68/105); return; }
+  const pitch  = matchData.pitch;
+  const availW = wrapW - PAD * 2;
+  const scale  = availW / pitch.length;
+  canvas.height = pitch.width * scale + PAD * 2;
+  pitchPx = { x:PAD, y:PAD, w:availW, h:pitch.width*scale, scale };
+}
+
+function toCanvas(px, py) {
+  if (!matchData) return [0,0];
+  const { x, y, w, h, scale } = pitchPx;
+  return [ x + px*scale, y + (matchData.pitch.width - py)*scale ];
+}
+
+function drawPitch() {
+  const { x, y, w, h, scale } = pitchPx;
+  const pitch = matchData ? matchData.pitch : { length:105, width:68, goal_width:7.32 };
+  ctx.fillStyle = '#2d7a2d'; ctx.fillRect(x, y, w, h);
+  const sw = w/10;
+  for (let i=0; i<10; i++) {
+    if (i%2===0) { ctx.fillStyle='rgba(0,0,0,0.07)'; ctx.fillRect(x+i*sw,y,sw,h); }
+  }
+  ctx.strokeStyle = 'rgba(255,255,255,0.75)'; ctx.lineWidth = 1.5;
+  ctx.strokeRect(x, y, w, h);
+  const [cx] = toCanvas(pitch.length/2, 0);
+  const [,cy1] = toCanvas(pitch.length/2, 0);
+  const [,cy2] = toCanvas(pitch.length/2, pitch.width);
+  ctx.beginPath(); ctx.moveTo(cx,cy1); ctx.lineTo(cx,cy2); ctx.stroke();
+  const [cmx,cmy] = toCanvas(pitch.length/2, pitch.width/2);
+  ctx.beginPath(); ctx.arc(cmx,cmy, 9.15*scale, 0, Math.PI*2); ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,0.75)';
+  ctx.beginPath(); ctx.arc(cmx,cmy, 2, 0, Math.PI*2); ctx.fill();
+  const halfGW=pitch.goal_width/2, midY=pitch.width/2;
+  function drawEnd(goalX, dir) {
+    const gb_w=5.5, gb_h=9.16;
+    const pa_w=16.5, pa_h=20.16;
+    const [,gy1]=toCanvas(0,midY-gb_h), [,gy2]=toCanvas(0,midY+gb_h);
+    ctx.strokeRect(x+(dir===1?0:w-gb_w*scale), gy1, gb_w*scale, gy2-gy1);
+    const [,py1]=toCanvas(0,midY-pa_h), [,py2]=toCanvas(0,midY+pa_h);
+    ctx.strokeRect(x+(dir===1?0:w-pa_w*scale), py1, pa_w*scale, py2-py1);
+    const psx_v = dir===1?11:pitch.length-11;
+    const [psx,psy]=toCanvas(psx_v,midY);
+    ctx.beginPath(); ctx.arc(psx,psy,2,0,Math.PI*2); ctx.fill();
+    const [,gl1]=toCanvas(goalX,midY-halfGW), [,gl2]=toCanvas(goalX,midY+halfGW);
+    const gd=2*scale;
+    ctx.fillStyle='rgba(255,255,255,0.15)';
+    if (dir===1) { ctx.fillRect(x-gd,gl1,gd,gl2-gl1); ctx.strokeRect(x-gd,gl1,gd,gl2-gl1); }
+    else         { ctx.fillRect(x+w,gl1,gd,gl2-gl1);  ctx.strokeRect(x+w,gl1,gd,gl2-gl1); }
+    ctx.fillStyle='rgba(255,255,255,0.75)';
+  }
+  drawEnd(0,1); drawEnd(pitch.length,-1);
+  [[0,0],[pitch.length,0],[0,pitch.width],[pitch.length,pitch.width]].forEach(([cx_,cy_],i)=>{
+    const [ccx,ccy]=toCanvas(cx_,cy_);
+    const angs=[0,Math.PI/2,-Math.PI/2,Math.PI];
+    ctx.beginPath(); ctx.arc(ccx,ccy,scale,angs[i],angs[i]+Math.PI/2); ctx.stroke();
+  });
+}
+
+function drawEmptyPitch() {
+  ctx.fillStyle='#1a3a1a'; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='#4a7c4a';
+  ctx.font='bold 16px system-ui'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('Select teams and click Simulate', canvas.width/2, canvas.height/2);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Render frame
+// ═══════════════════════════════════════════════════════════════════════
+
+const ROLE_COLORS = {
+  home: { gk:'#1d4ed8', field:'#3b82f6' },
+  away: { gk:'#b91c1c', field:'#ef4444' },
+};
+const ROLE_LETTER = { gk:'G', def:'D', mid:'M', fwd:'F' };
+
+function drawFrame(idx) {
+  if (!matchData) return;
+  resizeCanvas();
+  const frame   = matchData.frames[idx];
+  const home    = matchData.home;
+  const away    = matchData.away;
+  const players = home.players.concat(away.players);
+  const scale   = pitchPx.scale;
+  drawPitch();
+
+  players.forEach((meta, i) => {
+    const isHome = i < home.players.length;
+    const pData  = frame.players[i];
+    const [cx,cy]= toCanvas(pData[0], pData[1]);
+    const hasBall = pData[2]===1;
+    const isGK    = meta.role==='gk';
+    const col = isHome
+      ? (isGK ? ROLE_COLORS.home.gk : ROLE_COLORS.home.field)
+      : (isGK ? ROLE_COLORS.away.gk : ROLE_COLORS.away.field);
+    const r = 7;
+    ctx.fillStyle='rgba(0,0,0,0.22)';
+    ctx.beginPath(); ctx.arc(cx+1,cy+1,r,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle=col;
+    ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.fill();
+    if (hasBall) {
+      ctx.strokeStyle='#fff'; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.arc(cx,cy,r+3,0,Math.PI*2); ctx.stroke();
+    }
+    ctx.fillStyle='#fff'; ctx.font='bold 7px system-ui';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(ROLE_LETTER[meta.role]||'?', cx, cy);
+    ctx.fillStyle='rgba(255,255,255,0.65)'; ctx.font='6px system-ui';
+    ctx.textBaseline='top';
+    ctx.fillText(meta.name, cx, cy+r+2);
+    const stam = pData[3] !== undefined ? pData[3] : 1.0;
+    if (stam < 0.75) {
+      ctx.strokeStyle = stam < 0.40 ? '#ef4444' : '#fbbf24';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r + 4, -Math.PI / 2, -Math.PI / 2 + stam * 2 * Math.PI);
+      ctx.stroke();
+    }
+  });
+
+  const [bx,by]=toCanvas(frame.ball[0],frame.ball[1]);
+  const hasCar=frame.players.some(p=>p[2]===1);
+  ctx.shadowColor=hasCar?'rgba(255,255,255,0.6)':'rgba(250,204,21,0.6)';
+  ctx.shadowBlur=8;
+  ctx.fillStyle=hasCar?'#fff':'#facc15';
+  ctx.beginPath(); ctx.arc(bx,by,5,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#00000055'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.arc(bx,by,5,0,Math.PI*2); ctx.stroke();
+  ctx.shadowBlur=0; ctx.shadowColor='transparent';
+
+  document.getElementById('home-score').textContent = frame.score[0];
+  document.getElementById('away-score').textContent = frame.score[1];
+  const ts = Math.floor(frame.t / (matchData.tick_rate||10));
+  document.getElementById('clock').textContent =
+    String(Math.floor(ts/60)).padStart(2,'0') + ':' + String(ts%60).padStart(2,'0');
+  document.getElementById('scrubber').value = idx;
+
+  if (frame.poss) {
+    const total = frame.poss[0] + frame.poss[1];
+    const homePct = total > 0 ? Math.round(frame.poss[0] / total * 100) : 50;
+    document.getElementById('poss-fill').style.width = homePct + '%';
+    document.getElementById('poss-home-pct').textContent = homePct + '%';
+    document.getElementById('poss-away-pct').textContent = (100 - homePct) + '%';
+  }
+
+  if (idx !== lastLoggedFrameIdx) {
+    // Catch up on every frame we may have skipped at high speed (forward only)
+    const from = Math.max(0, lastLoggedFrameIdx + 1);
+    lastLoggedFrameIdx = idx;
+    for (let i = from; i <= idx; i++) {
+      const f = matchData.frames[i];
+      f.events.forEach(ev => {
+        let goalData = null;
+        if (ev === 'goal') {
+          goalData = f.goal || null;
+        }
+        logEvent(f.min, ev, f.score, goalData);
+        if (ev === 'goal' && goalData) {
+          const tbody = document.getElementById('goals-tbody');
+          const placeholder = tbody.querySelector('.no-goals');
+          if (placeholder) placeholder.closest('tr').remove();
+          const teamColor = goalData.team === 0 ? '#60a5fa' : '#f87171';
+          const tr = document.createElement('tr');
+          tr.innerHTML =
+            `<td>${goalData.minute}'</td>` +
+            `<td style="color:${teamColor};font-weight:600">${goalData.scorer}</td>` +
+            `<td style="color:#94a3b8">${goalData.assist || '—'}</td>` +
+            `<td>${goalData.score[0]}–${goalData.score[1]}</td>`;
+          tbody.appendChild(tr);
+        }
+      });
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Event log
+// ═══════════════════════════════════════════════════════════════════════
+
+const EVENT_LABELS = {
+  goal:'⚽ GOAL!', save:'🧤 Save', shot:'🎯 Shot',
+  shot_wide:'↗ Wide', pass_complete:'↗ Pass', pass_intercepted:'✋ Intercepted',
+  tackle_won:'⚔ Tackle', kickoff:'🏁 Kickoff',
+  half_time:'⏸ Half Time', full_time:'🏆 Full Time',
+  throw_in:'Throw-in', goal_kick:'Goal kick', corner_kick:'📐 Corner',
+  offside:'🚩 Offside',
+  extra_time:'⏱ Extra Time', penalty_kick:'🥅 Penalty',
+};
+
+function logEvent(minute, evType, score, goalData) {
+  const log   = document.getElementById('event-log');
+  const div   = document.createElement('div');
+  div.className = 'log-entry ' + evType;
+  let text = `<span class="min-tag">${minute}'</span>${EVENT_LABELS[evType]||evType}`;
+  if (evType==='goal') {
+    text += `  ${score[0]}–${score[1]}`;
+    if (goalData) {
+      text += ` <span style="color:#86efac">${goalData.scorer}</span>`;
+      if (goalData.assist) text += ` <span style="color:#94a3b8">(ast: ${goalData.assist})</span>`;
+    }
+  }
+  div.innerHTML = text;
+  log.prepend(div);
+  while (log.children.length > 80) log.removeChild(log.lastChild);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// Animation loop
+// ═══════════════════════════════════════════════════════════════════════
+
+function startAnimation() {
+  playing=true; document.getElementById('play-btn').textContent='⏸';
+  lastRafTs=0; rafHandle=requestAnimationFrame(animLoop);
+}
+function stopAnimation() {
+  playing=false; if(rafHandle)cancelAnimationFrame(rafHandle);
+  document.getElementById('play-btn').textContent='▶';
+}
+function animLoop(ts) {
+  if(!playing||!matchData) return;
+  if(lastRafTs===0) lastRafTs=ts;
+  const dt=(ts-lastRafTs)/1000; lastRafTs=ts;
+  const secPerFrame=matchData.sample_every/(matchData.tick_rate||10);
+  frameIdx=Math.min(matchData.frames.length-1, frameIdx+(dt*getSpeedMul())/secPerFrame);
+  drawFrame(Math.floor(frameIdx));
+  if(frameIdx>=matchData.frames.length-1) stopAnimation();
+  else rafHandle=requestAnimationFrame(animLoop);
+}
+
+document.getElementById('play-btn').addEventListener('click', () => {
+  if(!matchData) return;
+  if(playing) stopAnimation();
+  else { if(frameIdx>=matchData.frames.length-1) frameIdx=0; startAnimation(); }
+});
+document.getElementById('scrubber').addEventListener('input', e => {
+  if(!matchData) return;
+  stopAnimation(); frameIdx=parseInt(e.target.value); drawFrame(frameIdx);
+});
+document.getElementById('speed-slider').addEventListener('input', () => {
+  document.getElementById('speed-label').textContent = `×${getSpeedMul()}`;
+});
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  if(matchData) drawFrame(Math.floor(frameIdx)); else drawEmptyPitch();
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// UI helpers
+// ═══════════════════════════════════════════════════════════════════════
+
+function setupUI() {
+  const n = matchData.frames.length - 1;
+  const scr = document.getElementById('scrubber');
+  scr.max=n; scr.value=0; scr.disabled=false;
+  document.getElementById('play-btn').disabled=false;
+  document.getElementById('home-name').textContent=matchData.home.name;
+  document.getElementById('away-name').textContent=matchData.away.name;
+  const hOvr = matchData.home.ovr; if (hOvr) document.getElementById('home-ovr').textContent = 'OVR ' + hOvr;
+  const aOvr = matchData.away.ovr; if (aOvr) document.getElementById('away-ovr').textContent = 'OVR ' + aOvr;
+  document.getElementById('home-score').textContent='0';
+  document.getElementById('away-score').textContent='0';
+  document.getElementById('clock').textContent='00:00';
+  document.getElementById('poss-fill').style.width='50%';
+  document.getElementById('poss-home-pct').textContent='50%';
+  document.getElementById('poss-away-pct').textContent='50%';
+  document.getElementById('event-log').innerHTML='';
+  lastLoggedFrameIdx = -1;
+  document.getElementById('goals-tbody').innerHTML =
+    '<tr><td colspan="4" class="no-goals">No goals yet</td></tr>';
+
+}
+
+function setStatus(msg) { document.getElementById('status').textContent=msg; }
+
+function randomizeTeam(t) {
+  const other   = teamKeys(1 - t);
+  const pool    = Object.keys(pokemonData).filter(k => !other.includes(k));
+  // Fisher-Yates shuffle then take 6
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  const six = pool.slice(0, 6);
+  const s   = teamState[t];
+  s.roster  = six;
+  for (let i = 0; i < 6; i++) s.slots[SLOT_ORDER[i]] = six[i];
+  renderGrid();
+  renderRoster(t);
+  updateSimButton();
+}
+
+document.querySelectorAll('.rand-team-btn').forEach(btn => {
+  btn.addEventListener('click', () => randomizeTeam(parseInt(btn.dataset.t)));
+});
+
+document.getElementById('rand-seed-btn').addEventListener('click', () => {
+  document.getElementById('seed').value = Math.floor(Math.random() * 100000);
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// Penalty shootout display
+// ═══════════════════════════════════════════════════════════════════════
+
+function renderPenaltyTable(data) {
+  const wrap   = document.getElementById('penalty-wrap');
+  const tbody  = document.getElementById('penalty-tbody');
+  const heading = document.getElementById('penalty-heading');
+  tbody.innerHTML = '';
+
+  if (!data.penalty_kicks || data.penalty_kicks.length === 0) {
+    wrap.style.display = 'none';
+    return;
+  }
+
+  const teamNames = [data.home.name, data.away.name];
+  const winnerName = data.penalty_winner !== null ? teamNames[data.penalty_winner] : '';
+  heading.textContent = `Penalty Shootout — Winner: ${winnerName}`;
+
+  data.penalty_kicks.forEach(kick => {
+    const tr = document.createElement('tr');
+    const teamColor = kick.team === 0 ? '#60a5fa' : '#f87171';
+    tr.innerHTML = `
+      <td style="padding:3px 6px;color:#94a3b8">${kick.round}</td>
+      <td style="padding:3px 6px;color:${teamColor}">${teamNames[kick.team]}</td>
+      <td style="padding:3px 6px">${kick.shooter}</td>
+      <td style="padding:3px 6px;color:#94a3b8">${kick.gk || '—'}</td>
+      <td style="padding:3px 6px">${kick.scored ? '<span style="color:#4ade80">⚽ Goal</span>' : '<span style="color:#f87171">✗ Saved</span>'}</td>
+      <td style="padding:3px 6px;font-weight:600">${kick.score[0]}–${kick.score[1]}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  wrap.style.display = 'block';
+}
+
+// ─── Boot ──────────────────────────────────────────────────────────────
+loadPokemon();
+resizeCanvas();
+drawEmptyPitch();
+document.getElementById('speed-label').textContent = `×${getSpeedMul()}`;
+</script>
+</body>
+</html>

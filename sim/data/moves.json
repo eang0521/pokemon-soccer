@@ -1,0 +1,90 @@
+{
+  "thunderbolt": {
+    "name": "Thunderbolt",
+    "type": "Electric",
+    "category": "special",
+    "power": 90,
+    "accuracy": 100,
+    "pp": 15,
+    "soccer_action": "powered_shot",
+    "effect": { "type": "paralyze", "chance": 0.10 },
+    "description": "Powerful electric shot; 10% chance to stun the goalkeeper briefly"
+  },
+  "quick_attack": {
+    "name": "Quick Attack",
+    "type": "Normal",
+    "category": "physical",
+    "power": 40,
+    "accuracy": 100,
+    "pp": 30,
+    "soccer_action": "sprint_burst",
+    "effect": null,
+    "description": "Sudden speed burst to blow past one defender"
+  },
+  "protect": {
+    "name": "Protect",
+    "type": "Normal",
+    "category": "status",
+    "power": 0,
+    "accuracy": 100,
+    "pp": 10,
+    "soccer_action": "guaranteed_save",
+    "effect": null,
+    "description": "Goalkeeper: guarantees save of the next shot this tick"
+  },
+  "agility": {
+    "name": "Agility",
+    "type": "Psychic",
+    "category": "status",
+    "power": 0,
+    "accuracy": 100,
+    "pp": 30,
+    "soccer_action": "speed_boost",
+    "effect": { "stat": "speed", "multiplier": 2.0, "duration_ticks": 100 },
+    "description": "Doubles effective Speed for ~10 simulated seconds"
+  },
+  "tackle": {
+    "name": "Tackle",
+    "type": "Normal",
+    "category": "physical",
+    "power": 40,
+    "accuracy": 100,
+    "pp": 35,
+    "soccer_action": "strong_tackle",
+    "effect": null,
+    "description": "Forceful tackle with higher success chance than a standard challenge"
+  },
+  "shadow_ball": {
+    "name": "Shadow Ball",
+    "type": "Ghost",
+    "category": "special",
+    "power": 80,
+    "accuracy": 100,
+    "pp": 15,
+    "soccer_action": "curve_shot",
+    "effect": { "type": "sp_defense_drop", "chance": 0.20 },
+    "description": "Curling shot that is harder for goalkeepers to read; 20% lowers their SpD"
+  },
+  "psychic": {
+    "name": "Psychic",
+    "type": "Psychic",
+    "category": "special",
+    "power": 90,
+    "accuracy": 100,
+    "pp": 10,
+    "soccer_action": "precision_pass",
+    "effect": null,
+    "description": "Perfectly threaded through-ball that ignores distance penalties"
+  },
+  "earthquake": {
+    "name": "Earthquake",
+    "type": "Ground",
+    "category": "physical",
+    "power": 100,
+    "accuracy": 100,
+    "pp": 10,
+    "soccer_action": "power_clear",
+    "effect": { "type": "slow_nearby", "radius_m": 5.0, "duration_ticks": 30 },
+    "description": "Thunderous clearance that briefly slows nearby opponents"
+  }
+}
