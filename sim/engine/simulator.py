@@ -37,7 +37,7 @@ TACKLE_RANGE_M = 1.2          # metres within which a tackle can be attempted
 TACKLE_INTERVAL_TICKS = 5     # cooldown ticks between tackle attempts per player
 PICKUP_RANGE_M = 1.5          # swept-sphere radius for loose-ball pickup
 # Pressing count is now dynamic — see _n_pressers()
-SHOT_COOLDOWN_TICKS = 3000    # ticks a player must wait between shots (~5 sim-minutes)
+SHOT_COOLDOWN_TICKS = 1800    # ticks a player must wait between shots (~3 sim-minutes)
 GK_CLAIM_RANGE_M = 2.5        # GK can claim any loose ball within this range in their box
 GK_PA_DEPTH_M = 9.5           # depth (m from goal line) of the GK's priority zone (≈10 yd)
 GK_SHOT_SAVE_RANGE_M = 1.85  # extended dive range for GK when a shot is in flight
@@ -851,6 +851,10 @@ class Simulator:
 
             self._check_tackles(carrier)
         else:
+            # Shot in flight: outfield defenders may deflect with their legs
+            if self._check_shot_blocks():
+                return
+
             # Loose ball: give players (especially GK) a chance to collect first
             if self._check_loose_ball():
                 return
@@ -887,6 +891,51 @@ class Simulator:
                 if oob_phase is not None:
                     self.rules.apply_restart(oob_phase, self.ball.position, self.state)
                 self.ball.velocity = Vec2()
+
+    def _check_shot_blocks(self) -> bool:
+        """Outfield defenders may deflect a shot in flight with their legs (low probability)."""
+        if not self._kick_is_shot or self._shot_beat_gk or self.ball.carrier is not None:
+            return False
+        shooter = self._last_kicked_by
+        if shooter is None:
+            return False
+        ball_spd = math.hypot(self.ball.velocity.x, self.ball.velocity.y)
+        if ball_spd < 3.0:
+            return False
+
+        ball_dir = Vec2(self.ball.velocity.x / ball_spd, self.ball.velocity.y / ball_spd)
+        defending_team = self.teams[1 - shooter.team_id]
+
+        for defender in defending_team.players:
+            if defender.role == Role.GOALKEEPER:
+                continue
+            rel = defender.position - self.ball.position
+            along = rel.dot(ball_dir)
+            if along < 0.0 or along > 8.0:     # only look ahead of the ball
+                continue
+            perp = abs(rel.x * ball_dir.y - rel.y * ball_dir.x)
+            if perp > 1.2:
+                continue
+            # Max 12% block chance at perp=0, scaling to 0 at perp=1.2 m
+            block_prob = 0.12 * (1.0 - perp / 1.2)
+            if random.random() >= block_prob:
+                continue
+            # Deflection: scatter ball at reduced speed
+            scatter = random.uniform(-math.pi / 2, math.pi / 2)
+            spill_spd = ball_spd * random.uniform(0.25, 0.55)
+            cos_a, sin_a = math.cos(scatter), math.sin(scatter)
+            self.ball.velocity = Vec2(
+                (ball_dir.x * cos_a - ball_dir.y * sin_a) * spill_spd,
+                (ball_dir.x * sin_a + ball_dir.y * cos_a) * spill_spd,
+            )
+            self._shot_beat_gk = True          # treat deflection like a beat-GK event
+            self._last_kicked_by = defender    # deflection changes last-touch
+            self.events.log(
+                self.state.tick, EventType.TACKLE_WON, defender.position,
+                player=defender, target=shooter,
+            )
+            return True
+        return False
 
     def _check_tackles(self, carrier: Player) -> None:
         # GK holding the ball cannot be challenged — opposing players back off

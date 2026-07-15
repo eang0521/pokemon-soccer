@@ -168,6 +168,39 @@ def shot_composure(carrier: Player, opponents: list[Player]) -> float:
     return 0.30 + 0.70 * ((nearest - 0.5) / 4.5)
 
 
+def shot_lane_pressure(
+    shooter_pos: "Vec2",
+    goal_pos: "Vec2",
+    opponents: "list[Player]",
+) -> float:
+    """
+    How clear is the shooting lane from defenders?
+    1.0 = no defender in the path to goal.
+    Drops toward 0.05 when a defender stands directly between shooter and goal.
+    Acts as a fatal-flaw factor in the geometric mean: a body in the lane
+    makes passing almost always the better choice.
+    """
+    if not opponents:
+        return 1.0
+    shoot_vec = goal_pos - shooter_pos
+    shoot_len = shoot_vec.magnitude
+    if shoot_len < 0.1:
+        return 1.0
+    direction = shoot_vec / shoot_len
+    min_perp = float("inf")
+    for opp in opponents:
+        rel = opp.position - shooter_pos
+        along = rel.dot(direction)
+        if along < 0.5 or along > shoot_len:   # only between shooter and goal
+            continue
+        perp = abs(rel.x * direction.y - rel.y * direction.x)
+        min_perp = min(min_perp, perp)
+    if math.isinf(min_perp):
+        return 1.0
+    # 0.05 when defender is directly in line; 1.0 at ≥ 5 m lateral clearance
+    return max(0.05, clamp01(min_perp / 5.0))
+
+
 def dribble_matchup(dribbler: Player, nearest_defender: Optional[Player]) -> float:
     """
     Dribbler's chance of getting past the nearest defender.

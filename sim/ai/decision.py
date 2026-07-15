@@ -24,6 +24,7 @@ from sim.ai.considerations import (
     pass_lane_safety,
     shot_angle_quality,
     shot_composure,
+    shot_lane_pressure,
     shot_success_odds,
 )
 
@@ -163,15 +164,16 @@ class Decider:
         dist = carrier.position.distance_to(goal)
         gk = self._find_goalkeeper(opponents)
 
-        odds  = shot_success_odds(carrier, gk, dist)
-        angle = shot_angle_quality(carrier.position, goal, self.pitch.width)
+        odds     = shot_success_odds(carrier, gk, dist)
+        angle    = shot_angle_quality(carrier.position, goal, self.pitch.width)
         shoot_zone = self._ROLE_SHOOT_ZONE_M.get(carrier.role, 10.0)
-        zone = clamp01(1.0 - dist / shoot_zone) if shoot_zone > 0.0 else 0.0
-
+        zone     = clamp01(1.0 - dist / shoot_zone) if shoot_zone > 0.0 else 0.0
         composure = shot_composure(carrier, opponents)
+        lane     = shot_lane_pressure(carrier.position, goal, opponents)
         role_bias = self._ROLE_SHOT_BIAS.get(carrier.role, 1.0)
-        c.breakdown = {"shot_odds": odds, "angle": angle, "zone": zone, "composure": composure, "role_bias": role_bias}
-        c.score = geometric_mean([odds, angle, zone, composure]) * role_bias
+        c.breakdown = {"shot_odds": odds, "angle": angle, "zone": zone,
+                       "composure": composure, "lane": lane, "role_bias": role_bias}
+        c.score = geometric_mean([odds, angle, zone, composure, lane]) * role_bias
 
     # ── Pass ──────────────────────────────────────────────────────────────────
 
