@@ -46,7 +46,7 @@ class Event:
     @property
     def match_minute(self) -> int:
         """Simulated match minute (10 ticks/s × 60 s = 600 ticks/min)."""
-        return self.tick // 600
+        return self.tick // 600 + 1
 
     def __repr__(self) -> str:
         actor = f" [{self.player.name}]" if self.player else ""

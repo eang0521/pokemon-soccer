@@ -83,7 +83,7 @@ class MatchState:
 
     @property
     def match_minute(self) -> int:
-        return int(self.simulated_seconds / 60)
+        return int(self.simulated_seconds / 60) + 1
 
     @property
     def is_first_half(self) -> bool:
