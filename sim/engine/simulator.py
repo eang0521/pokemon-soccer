@@ -69,9 +69,11 @@ class Simulator:
         self.events = EventLog()
 
         all_players = self._all_players()
-        self._decide_timer: dict[Player, int] = {p: 0 for p in all_players}
-        self._tackle_timer: dict[Player, int] = {p: 0 for p in all_players}
-        self._shot_timer:   dict[Player, int] = {p: 0 for p in all_players}
+        self._decide_timer:   dict[Player, int] = {p: 0 for p in all_players}
+        self._tackle_timer:   dict[Player, int] = {p: 0 for p in all_players}
+        self._shot_timer:     dict[Player, int] = {p: 0 for p in all_players}
+        self._gk_hold_timer:  dict[Player, int] = {p: 0 for p in all_players}
+        self._prev_carrier:   Optional[Player]  = None
         self._move_target: dict[Player, Vec2] = {
             p: Vec2() for p in all_players
         }
@@ -190,6 +192,8 @@ class Simulator:
                 self._tackle_timer[p] -= 1
             if self._shot_timer[p] > 0:
                 self._shot_timer[p] -= 1
+            if self._gk_hold_timer[p] > 0:
+                self._gk_hold_timer[p] -= 1
 
     # ─── Phase management ─────────────────────────────────────────────────────
 
@@ -469,10 +473,24 @@ class Simulator:
     def _update_decisions(self) -> None:
         carrier = self.ball.carrier
 
+        # GK just picked up the ball → impose a hold before distributing
+        if (carrier is not None
+                and carrier is not self._prev_carrier
+                and carrier.role == Role.GOALKEEPER
+                and self._gk_hold_timer[carrier] == 0):
+            self._gk_hold_timer[carrier] = 25   # 2.5 sim-seconds
+            self._decide_timer[carrier]  = 25
+
         if carrier is not None and self._decide_timer[carrier] <= 0:
-            self._carrier_decide(carrier)
-            if self.ball.carrier is carrier:
+            # GK still in hold window — don't distribute yet
+            if carrier.role == Role.GOALKEEPER and self._gk_hold_timer[carrier] > 0:
                 self._decide_timer[carrier] = CARRIER_DECIDE_TICKS
+            else:
+                self._carrier_decide(carrier)
+                if self.ball.carrier is carrier:
+                    self._decide_timer[carrier] = CARRIER_DECIDE_TICKS
+
+        self._prev_carrier = carrier
 
         for p in self._all_players():
             if p is not carrier and self._decide_timer[p] <= 0:
@@ -757,7 +775,7 @@ class Simulator:
 
         for team in self.teams:
             pressers: set[Player] = set()
-            if carrier.team_id != team.team_id:
+            if carrier.team_id != team.team_id and carrier.role != Role.GOALKEEPER:
                 sorted_by_dist = sorted(
                     team.players,
                     key=lambda p: p.position.distance_to(carrier.position),
@@ -864,6 +882,9 @@ class Simulator:
                 self.ball.velocity = Vec2()
 
     def _check_tackles(self, carrier: Player) -> None:
+        # GK holding the ball cannot be challenged — opposing players back off
+        if carrier.role == Role.GOALKEEPER:
+            return
         opp_team = self.teams[1 - carrier.team_id]
         for opp in opp_team.players:
             if self._tackle_timer[opp] > 0:
