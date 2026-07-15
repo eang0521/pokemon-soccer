@@ -31,7 +31,7 @@ from sim.engine.events import EventLog, EventType
 # ─── Timing / physics constants ──────────────────────────────────────────────
 
 DT = 0.1                      # seconds per tick (tick_rate = 10 Hz)
-CARRIER_DECIDE_TICKS = 10     # re-decide every 1.0 sim-seconds when carrying
+CARRIER_DECIDE_TICKS = 15     # re-decide every 1.5 sim-seconds when carrying
 OFFBALL_DECIDE_TICKS = 10     # off-ball players re-evaluate home zone every 1.0 s
 TACKLE_RANGE_M = 1.2          # metres within which a tackle can be attempted
 TACKLE_INTERVAL_TICKS = 5     # cooldown ticks between tackle attempts per player
