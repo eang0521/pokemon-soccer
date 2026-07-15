@@ -148,7 +148,7 @@ class Decider:
     _ROLE_SHOT_BIAS: dict[Role, float] = {
         Role.GOALKEEPER: 0.0,
         Role.DEFENDER:   0.1,
-        Role.MIDFIELDER: 0.45,
+        Role.MIDFIELDER: 0.65,
         Role.FORWARD:    1.0,
     }
 
