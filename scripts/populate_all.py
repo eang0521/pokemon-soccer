@@ -99,12 +99,16 @@ def main() -> None:
             time.sleep(1.0)   # back off on error
             continue
 
-        key    = data["name"]
+        # data["name"] is the form-specific API name (e.g. "mimikyu-disguised").
+        # data["species"]["name"] is the base species name (e.g. "mimikyu").
+        # Use the species name as both the JSON key and the display name source
+        # so form suffixes like "Disguised", "Solo", "Midday" never appear.
+        species_key = (data.get("species") or {}).get("name") or data["name"]
         types  = [t["type"]["name"].title() for t in data["types"]]
         raw_st = {s["stat"]["name"]: s["base_stat"] for s in data["stats"]}
 
-        result[key] = {
-            "species":    species_name(key),
+        result[species_key] = {
+            "species":    species_name(species_key),
             "pokedex_id": dex_id,
             "types":      types,
             "base_stats": {
@@ -116,9 +120,9 @@ def main() -> None:
                 "speed":      raw_st["speed"],
             },
             "moves":      get_moves(data),
-            "sprite_url": f"{SPRITE_BASE}/{key}.png",
+            "sprite_url": f"{SPRITE_BASE}/{species_key}.png",
         }
-        print(f"{result[key]['species']} ({'/'.join(types)})")
+        print(f"{result[species_key]['species']} ({'/'.join(types)})")
         time.sleep(0.02)
 
     if not result:

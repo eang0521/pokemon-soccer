@@ -8625,8 +8625,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/jirachi.png"
   },
-  "deoxys-normal": {
-    "species": "Deoxys Normal",
+  "deoxys": {
+    "species": "Deoxys",
     "pokedex_id": 386,
     "types": [
       "Psychic"
@@ -8645,7 +8645,7 @@
       "hyper_beam",
       "psychic"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/deoxys-normal.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/deoxys.png"
   },
   "turtwig": {
     "species": "Turtwig",
@@ -9231,8 +9231,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/burmy.png"
   },
-  "wormadam-plant": {
-    "species": "Wormadam Plant",
+  "wormadam": {
+    "species": "Wormadam",
     "pokedex_id": 413,
     "types": [
       "Bug",
@@ -9252,7 +9252,7 @@
       "psybeam",
       "growth"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/wormadam-plant.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/wormadam.png"
   },
   "mothim": {
     "species": "Mothim",
@@ -10899,8 +10899,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/regigigas.png"
   },
-  "giratina-altered": {
-    "species": "Giratina Altered",
+  "giratina": {
+    "species": "Giratina",
     "pokedex_id": 487,
     "types": [
       "Ghost",
@@ -10920,7 +10920,7 @@
       "destiny_bond",
       "pain_split"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/giratina-altered.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/giratina.png"
   },
   "cresselia": {
     "species": "Cresselia",
@@ -11010,8 +11010,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/darkrai.png"
   },
-  "shaymin-land": {
-    "species": "Shaymin Land",
+  "shaymin": {
+    "species": "Shaymin",
     "pokedex_id": 492,
     "types": [
       "Grass"
@@ -11030,7 +11030,7 @@
       "sleep_powder",
       "quick_attack"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/shaymin-land.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/shaymin.png"
   },
   "arceus": {
     "species": "Arceus",
@@ -12305,8 +12305,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/lilligant.png"
   },
-  "basculin-red-striped": {
-    "species": "Basculin Red Striped",
+  "basculin": {
+    "species": "Basculin",
     "pokedex_id": 550,
     "types": [
       "Water"
@@ -12325,7 +12325,7 @@
       "take_down",
       "thrash"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/basculin-red-striped.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/basculin.png"
   },
   "sandile": {
     "species": "Sandile",
@@ -12418,8 +12418,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/darumaka.png"
   },
-  "darmanitan-standard": {
-    "species": "Darmanitan Standard",
+  "darmanitan": {
+    "species": "Darmanitan",
     "pokedex_id": 555,
     "types": [
       "Fire"
@@ -12438,7 +12438,7 @@
       "tackle",
       "thrash"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/darmanitan-standard.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/darmanitan.png"
   },
   "maractus": {
     "species": "Maractus",
@@ -13249,8 +13249,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/amoonguss.png"
   },
-  "frillish-male": {
-    "species": "Frillish Male",
+  "frillish": {
+    "species": "Frillish",
     "pokedex_id": 592,
     "types": [
       "Water",
@@ -13270,10 +13270,10 @@
       "hydro_pump",
       "bubble_beam"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/frillish-male.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/frillish.png"
   },
-  "jellicent-male": {
-    "species": "Jellicent Male",
+  "jellicent": {
+    "species": "Jellicent",
     "pokedex_id": 593,
     "types": [
       "Water",
@@ -13293,7 +13293,7 @@
       "hydro_pump",
       "bubble_beam"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/jellicent-male.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/jellicent.png"
   },
   "alomomola": {
     "species": "Alomomola",
@@ -14354,8 +14354,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/virizion.png"
   },
-  "tornadus-incarnate": {
-    "species": "Tornadus Incarnate",
+  "tornadus": {
+    "species": "Tornadus",
     "pokedex_id": 641,
     "types": [
       "Flying"
@@ -14374,10 +14374,10 @@
       "thrash",
       "leer"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/tornadus-incarnate.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/tornadus.png"
   },
-  "thundurus-incarnate": {
-    "species": "Thundurus Incarnate",
+  "thundurus": {
+    "species": "Thundurus",
     "pokedex_id": 642,
     "types": [
       "Electric",
@@ -14397,7 +14397,7 @@
       "leer",
       "bite"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/thundurus-incarnate.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/thundurus.png"
   },
   "reshiram": {
     "species": "Reshiram",
@@ -14445,8 +14445,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/zekrom.png"
   },
-  "landorus-incarnate": {
-    "species": "Landorus Incarnate",
+  "landorus": {
+    "species": "Landorus",
     "pokedex_id": 645,
     "types": [
       "Ground",
@@ -14466,7 +14466,7 @@
       "leer",
       "bite"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/landorus-incarnate.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/landorus.png"
   },
   "kyurem": {
     "species": "Kyurem",
@@ -14491,8 +14491,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/kyurem.png"
   },
-  "keldeo-ordinary": {
-    "species": "Keldeo Ordinary",
+  "keldeo": {
+    "species": "Keldeo",
     "pokedex_id": 647,
     "types": [
       "Water",
@@ -14512,10 +14512,10 @@
       "take_down",
       "leer"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/keldeo-ordinary.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/keldeo.png"
   },
-  "meloetta-aria": {
-    "species": "Meloetta Aria",
+  "meloetta": {
+    "species": "Meloetta",
     "pokedex_id": 648,
     "types": [
       "Normal",
@@ -14535,7 +14535,7 @@
       "confusion",
       "psychic"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/meloetta-aria.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/meloetta.png"
   },
   "genesect": {
     "species": "Genesect",
@@ -14963,8 +14963,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/litleo.png"
   },
-  "pyroar-male": {
-    "species": "Pyroar Male",
+  "pyroar": {
+    "species": "Pyroar",
     "pokedex_id": 668,
     "types": [
       "Fire",
@@ -14984,7 +14984,7 @@
       "take_down",
       "leer"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/pyroar-male.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/pyroar.png"
   },
   "flabebe": {
     "species": "Flabébé",
@@ -15185,8 +15185,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/espurr.png"
   },
-  "meowstic-male": {
-    "species": "Meowstic Male",
+  "meowstic": {
+    "species": "Meowstic",
     "pokedex_id": 678,
     "types": [
       "Psychic"
@@ -15205,7 +15205,7 @@
       "psybeam",
       "confusion"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/meowstic-male.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/meowstic.png"
   },
   "honedge": {
     "species": "Honedge",
@@ -15253,8 +15253,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/doublade.png"
   },
-  "aegislash-shield": {
-    "species": "Aegislash Shield",
+  "aegislash": {
+    "species": "Aegislash",
     "pokedex_id": 681,
     "types": [
       "Steel",
@@ -15274,7 +15274,7 @@
       "slash",
       "fury_cutter"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/aegislash-shield.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/aegislash.png"
   },
   "spritzee": {
     "species": "Spritzee",
@@ -15910,8 +15910,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/trevenant.png"
   },
-  "pumpkaboo-average": {
-    "species": "Pumpkaboo Average",
+  "pumpkaboo": {
+    "species": "Pumpkaboo",
     "pokedex_id": 710,
     "types": [
       "Ghost",
@@ -15931,10 +15931,10 @@
       "confuse_ray",
       "scary_face"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/pumpkaboo-average.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/pumpkaboo.png"
   },
-  "gourgeist-average": {
-    "species": "Gourgeist Average",
+  "gourgeist": {
+    "species": "Gourgeist",
     "pokedex_id": 711,
     "types": [
       "Ghost",
@@ -15954,7 +15954,7 @@
       "confuse_ray",
       "explosion"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/gourgeist-average.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/gourgeist.png"
   },
   "bergmite": {
     "species": "Bergmite",
@@ -16091,8 +16091,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/yveltal.png"
   },
-  "zygarde-50": {
-    "species": "Zygarde 50",
+  "zygarde": {
+    "species": "Zygarde",
     "pokedex_id": 718,
     "types": [
       "Dragon",
@@ -16112,7 +16112,7 @@
       "earthquake",
       "dig"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/zygarde-50.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/zygarde.png"
   },
   "diancie": {
     "species": "Diancie",
@@ -16612,8 +16612,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/crabominable.png"
   },
-  "oricorio-baile": {
-    "species": "Oricorio Baile",
+  "oricorio": {
+    "species": "Oricorio",
     "pokedex_id": 741,
     "types": [
       "Fire",
@@ -16633,7 +16633,7 @@
       "growl",
       "peck"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/oricorio-baile.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/oricorio.png"
   },
   "cutiefly": {
     "species": "Cutiefly",
@@ -16703,8 +16703,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/rockruff.png"
   },
-  "lycanroc-midday": {
-    "species": "Lycanroc Midday",
+  "lycanroc": {
+    "species": "Lycanroc",
     "pokedex_id": 745,
     "types": [
       "Rock"
@@ -16723,10 +16723,10 @@
       "leer",
       "bite"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/lycanroc-midday.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/lycanroc.png"
   },
-  "wishiwashi-solo": {
-    "species": "Wishiwashi Solo",
+  "wishiwashi": {
+    "species": "Wishiwashi",
     "pokedex_id": 746,
     "types": [
       "Water"
@@ -16745,7 +16745,7 @@
       "growl",
       "water_gun"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/wishiwashi-solo.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/wishiwashi.png"
   },
   "mareanie": {
     "species": "Mareanie",
@@ -17355,8 +17355,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/silvally.png"
   },
-  "minior-red-meteor": {
-    "species": "Minior Red Meteor",
+  "minior": {
+    "species": "Minior",
     "pokedex_id": 774,
     "types": [
       "Rock",
@@ -17376,7 +17376,7 @@
       "double_edge",
       "confuse_ray"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/minior-red-meteor.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/minior.png"
   },
   "komala": {
     "species": "Komala",
@@ -17446,8 +17446,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/togedemaru.png"
   },
-  "mimikyu-disguised": {
-    "species": "Mimikyu Disguised",
+  "mimikyu": {
+    "species": "Mimikyu",
     "pokedex_id": 778,
     "types": [
       "Ghost",
@@ -17467,7 +17467,7 @@
       "double_team",
       "splash"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/mimikyu-disguised.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/mimikyu.png"
   },
   "bruxish": {
     "species": "Bruxish",
@@ -19033,8 +19033,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/toxel.png"
   },
-  "toxtricity-amped": {
-    "species": "Toxtricity Amped",
+  "toxtricity": {
+    "species": "Toxtricity",
     "pokedex_id": 849,
     "types": [
       "Electric",
@@ -19054,7 +19054,7 @@
       "acid",
       "thunder_shock"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/toxtricity-amped.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/toxtricity.png"
   },
   "sizzlipede": {
     "species": "Sizzlipede",
@@ -19615,8 +19615,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/stonjourner.png"
   },
-  "eiscue-ice": {
-    "species": "Eiscue Ice",
+  "eiscue": {
+    "species": "Eiscue",
     "pokedex_id": 875,
     "types": [
       "Ice"
@@ -19635,10 +19635,10 @@
       "mist",
       "surf"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/eiscue-ice.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/eiscue.png"
   },
-  "indeedee-male": {
-    "species": "Indeedee Male",
+  "indeedee": {
+    "species": "Indeedee",
     "pokedex_id": 876,
     "types": [
       "Psychic",
@@ -19658,10 +19658,10 @@
       "encore",
       "helping_hand"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/indeedee-male.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/indeedee.png"
   },
-  "morpeko-full-belly": {
-    "species": "Morpeko Full Belly",
+  "morpeko": {
+    "species": "Morpeko",
     "pokedex_id": 877,
     "types": [
       "Electric",
@@ -19681,7 +19681,7 @@
       "leer",
       "bite"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/morpeko-full-belly.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/morpeko.png"
   },
   "cufant": {
     "species": "Cufant",
@@ -20000,8 +20000,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/kubfu.png"
   },
-  "urshifu-single-strike": {
-    "species": "Urshifu Single Strike",
+  "urshifu": {
+    "species": "Urshifu",
     "pokedex_id": 892,
     "types": [
       "Fighting",
@@ -20021,7 +20021,7 @@
       "counter",
       "focus_energy"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/urshifu-single-strike.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/urshifu.png"
   },
   "zarude": {
     "species": "Zarude",
@@ -20226,8 +20226,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/ursaluna.png"
   },
-  "basculegion-male": {
-    "species": "Basculegion Male",
+  "basculegion": {
+    "species": "Basculegion",
     "pokedex_id": 902,
     "types": [
       "Water",
@@ -20247,7 +20247,7 @@
       "take_down",
       "thrash"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/basculegion-male.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/basculegion.png"
   },
   "sneasler": {
     "species": "Sneasler",
@@ -20295,8 +20295,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/overqwil.png"
   },
-  "enamorus-incarnate": {
-    "species": "Enamorus Incarnate",
+  "enamorus": {
+    "species": "Enamorus",
     "pokedex_id": 905,
     "types": [
       "Fairy",
@@ -20316,7 +20316,7 @@
       "outrage",
       "twister"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/enamorus-incarnate.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/enamorus.png"
   },
   "sprigatito": {
     "species": "Sprigatito",
@@ -20541,8 +20541,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/lechonk.png"
   },
-  "oinkologne-male": {
-    "species": "Oinkologne Male",
+  "oinkologne": {
+    "species": "Oinkologne",
     "pokedex_id": 916,
     "types": [
       "Normal"
@@ -20561,7 +20561,7 @@
       "take_down",
       "double_edge"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/oinkologne-male.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/oinkologne.png"
   },
   "tarountula": {
     "species": "Tarountula",
@@ -20742,8 +20742,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/tandemaus.png"
   },
-  "maushold-family-of-four": {
-    "species": "Maushold Family Of Four",
+  "maushold": {
+    "species": "Maushold",
     "pokedex_id": 925,
     "types": [
       "Normal"
@@ -20762,7 +20762,7 @@
       "charm",
       "encore"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/maushold-family-of-four.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/maushold.png"
   },
   "fidough": {
     "species": "Fidough",
@@ -20877,8 +20877,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/arboliva.png"
   },
-  "squawkabilly-green-plumage": {
-    "species": "Squawkabilly Green Plumage",
+  "squawkabilly": {
+    "species": "Squawkabilly",
     "pokedex_id": 931,
     "types": [
       "Normal",
@@ -20898,7 +20898,7 @@
       "growl",
       "peck"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/squawkabilly-green-plumage.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/squawkabilly.png"
   },
   "nacli": {
     "species": "Nacli",
@@ -21620,8 +21620,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/finizen.png"
   },
-  "palafin-zero": {
-    "species": "Palafin Zero",
+  "palafin": {
+    "species": "Palafin",
     "pokedex_id": 964,
     "types": [
       "Water"
@@ -21640,7 +21640,7 @@
       "water_gun",
       "hydro_pump"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/palafin-zero.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/palafin.png"
   },
   "varoom": {
     "species": "Varoom",
@@ -21935,8 +21935,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/dondozo.png"
   },
-  "tatsugiri-curly": {
-    "species": "Tatsugiri Curly",
+  "tatsugiri": {
+    "species": "Tatsugiri",
     "pokedex_id": 978,
     "types": [
       "Dragon",
@@ -21956,7 +21956,7 @@
       "splash",
       "mirror_coat"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/tatsugiri-curly.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/tatsugiri.png"
   },
   "annihilape": {
     "species": "Annihilape",
@@ -22027,8 +22027,8 @@
     ],
     "sprite_url": "https://img.pokemondb.net/sprites/home/normal/farigiraf.png"
   },
-  "dudunsparce-two-segment": {
-    "species": "Dudunsparce Two Segment",
+  "dudunsparce": {
+    "species": "Dudunsparce",
     "pokedex_id": 982,
     "types": [
       "Normal"
@@ -22047,7 +22047,7 @@
       "defense_curl",
       "glare"
     ],
-    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/dudunsparce-two-segment.png"
+    "sprite_url": "https://img.pokemondb.net/sprites/home/normal/dudunsparce.png"
   },
   "kingambit": {
     "species": "Kingambit",
