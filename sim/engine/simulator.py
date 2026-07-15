@@ -720,16 +720,17 @@ class Simulator:
         goal_center_y = self.pitch.width / 2
         dist = carrier.position.distance_to(Vec2(goal_x, goal_center_y))
 
-        # Shot accuracy: Attack (power control) + Sp.Atk (placement technique).
-        # Gaussian gives a realistic distribution — most shots near target, rare wild ones.
-        half_gw = self.pitch.goal_width / 2         # 2.82 m
-        accuracy = min(1.0, (carrier.effective_attack + carrier.effective_sp_attack) / 240.0)
-        dist_factor = min(1.0, dist / 30.0)
-        spread = half_gw * (0.5 + 0.5 * dist_factor) * (1.5 - accuracy)
-        spread = min(spread, half_gw * 2.5)
-        y_offset  = random.gauss(0, spread / 1.5)           # lateral (left-right)
-        x_scatter = random.gauss(0, spread * 0.25)          # depth (short/long)
-        shot_target = Vec2(goal_x + x_scatter, goal_center_y + y_offset)
+        # Shot placement: Attack (power) + Sp.Atk (technique) → accuracy 0-1.
+        # sigma_y is the std-dev of lateral scatter; when |y_offset| > half_gw
+        # the ball misses wide or over the bar → goal kick for the defence.
+        # Target miss rate: ~5% close in for elite shooters, ~20% from box edge
+        # for average stats, ~40%+ for weak shooters from long range.
+        half_gw     = self.pitch.goal_width / 2         # 2.82 m
+        accuracy    = min(1.0, (carrier.effective_attack + carrier.effective_sp_attack) / 240.0)
+        dist_factor = min(1.0, dist / 25.0)
+        sigma_y     = half_gw * (0.5 + 1.0 * dist_factor) * (1.2 - 0.7 * accuracy)
+        y_offset    = random.gauss(0, max(0.3, sigma_y))
+        shot_target = Vec2(goal_x, goal_center_y + y_offset)
 
         self.events.log(self.state.tick, EventType.SHOT, carrier.position, player=carrier)
         self._last_kicked_by = carrier
