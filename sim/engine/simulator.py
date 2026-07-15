@@ -473,13 +473,19 @@ class Simulator:
     def _update_decisions(self) -> None:
         carrier = self.ball.carrier
 
-        # GK just picked up the ball → impose a hold before distributing
+        # GK just picked up the ball → impose a hold before distributing,
+        # but skip it for back-passes from teammates (back-pass rule).
         if (carrier is not None
                 and carrier is not self._prev_carrier
                 and carrier.role == Role.GOALKEEPER
                 and self._gk_hold_timer[carrier] == 0):
-            self._gk_hold_timer[carrier] = 25   # 2.5 sim-seconds
-            self._decide_timer[carrier]  = 25
+            back_pass = (
+                self._last_kicked_by is not None
+                and self._last_kicked_by.team_id == carrier.team_id
+            )
+            if not back_pass:
+                self._gk_hold_timer[carrier] = 25   # 2.5 sim-seconds
+                self._decide_timer[carrier]  = 25
 
         if carrier is not None and self._decide_timer[carrier] <= 0:
             # GK still in hold window — don't distribute yet
