@@ -265,6 +265,22 @@ h1 {
 .poke-ovr { font-size: 0.58rem; color: #fbbf24; font-weight: 700; margin-top: 1px; }
 
 .team-ovr-sub { font-size: 0.72rem; color: #94a3b8; margin-top: 1px; }
+
+/* ── Paste-team input ────────────────────────────────────────── */
+.paste-row { padding: 0 0 6px; }
+.paste-input {
+  width: 100%;
+  background: #0f1117;
+  color: #e2e8f0;
+  border: 1px solid #2d3250;
+  border-radius: 6px;
+  padding: 5px 8px;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+.paste-input:focus { outline: none; border-color: #fbbf24; font-style: normal; }
+.paste-input.paste-ok  { border-color: #22c55e; transition: border-color .2s; }
+.paste-input.paste-err { border-color: #ef4444; }
 .home-name-wrap { min-width: 130px; }
 .away-name-wrap { min-width: 130px; text-align: right; }
 
@@ -507,6 +523,10 @@ select:focus, input[type=number]:focus { outline: none; border-color: #fbbf24; }
           <button class="mode-btn"        data-t="0" data-mode="manual">Manual</button>
         </div>
       </div>
+      <div class="paste-row">
+        <input class="paste-input" id="paste-0" data-t="0" type="text"
+               placeholder="Paste 6 names (tab / comma / newline)…" autocomplete="off">
+      </div>
       <div id="roster-auto-0"   class="roster-auto"></div>
       <div id="roster-manual-0" class="roster-manual" style="display:none"></div>
     </div>
@@ -520,6 +540,10 @@ select:focus, input[type=number]:focus { outline: none; border-color: #fbbf24; }
           <button class="mode-btn active" data-t="1" data-mode="auto">Auto</button>
           <button class="mode-btn"        data-t="1" data-mode="manual">Manual</button>
         </div>
+      </div>
+      <div class="paste-row">
+        <input class="paste-input" id="paste-1" data-t="1" type="text"
+               placeholder="Paste 6 names (tab / comma / newline)…" autocomplete="off">
       </div>
       <div id="roster-auto-1"   class="roster-auto"></div>
       <div id="roster-manual-1" class="roster-manual" style="display:none"></div>
@@ -855,6 +879,7 @@ async function loadPokemon() {
   try {
     const resp = await fetch('/api/pokemon');
     pokemonData = await resp.json();
+    buildNameIndex();
 
     for (let t = 0; t < 2; t++) {
       for (const key of DEFAULTS[t]) {
@@ -1140,6 +1165,7 @@ let playing   = false;
 let rafHandle = null;
 let lastRafTs = 0;
 let lastLoggedFrameIdx = -1;
+let loggedGoalFrames   = new Set();  // frame indices already added to goal scorers table
 
 const SPEED_STEPS = [1, 2, 4, 8, 16, 32, 64, 128, 200, 400];
 function getSpeedMul() {
@@ -1379,7 +1405,8 @@ function drawFrame(idx) {
           goalData = f.goal || null;
         }
         logEvent(f.min, ev, f.score, goalData);
-        if (ev === 'goal' && goalData) {
+        if (ev === 'goal' && goalData && !loggedGoalFrames.has(i)) {
+          loggedGoalFrames.add(i);
           const tbody = document.getElementById('goals-tbody');
           const placeholder = tbody.querySelector('.no-goals');
           if (placeholder) placeholder.closest('tr').remove();
@@ -1489,6 +1516,7 @@ function setupUI() {
   document.getElementById('poss-away-pct').textContent='50%';
   document.getElementById('event-log').innerHTML='';
   lastLoggedFrameIdx = -1;
+  loggedGoalFrames   = new Set();
   document.getElementById('goals-tbody').innerHTML =
     '<tr><td colspan="4" class="no-goals">No goals yet</td></tr>';
 
@@ -1515,6 +1543,96 @@ function randomizeTeam(t) {
 
 document.querySelectorAll('.rand-team-btn').forEach(btn => {
   btn.addEventListener('click', () => randomizeTeam(parseInt(btn.dataset.t)));
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+// Paste-team feature
+// ═══════════════════════════════════════════════════════════════════════
+
+let nameToKey = {};   // built once pokemonData is loaded
+
+function buildNameIndex() {
+  nameToKey = {};
+  for (const [key, poke] of Object.entries(pokemonData)) {
+    // API key (e.g. "mr-mime")
+    nameToKey[key] = key;
+    // Display name lowercased (e.g. "mr. mime")
+    nameToKey[poke.name.toLowerCase()] = key;
+    // Normalised: strip punctuation, collapse spaces to hyphens
+    const norm = poke.name.toLowerCase()
+      .replace(/♀/g, 'f').replace(/♂/g, 'm')
+      .replace(/[.':]/g, '')
+      .replace(/[\s ]+/g, '-')
+      .replace(/-+/g, '-');
+    nameToKey[norm] = key;
+  }
+}
+
+function resolvePokeKey(raw) {
+  const s = raw.trim();
+  if (!s) return null;
+  const low = s.toLowerCase();
+  if (pokemonData[low]) return low;
+  if (nameToKey[low]) return nameToKey[low];
+  // Apply same normalisation as the index
+  const norm = low
+    .replace(/♀/g, 'f').replace(/♂/g, 'm')
+    .replace(/[.':]/g, '')
+    .replace(/[\s ]+/g, '-')
+    .replace(/-+/g, '-');
+  return pokemonData[norm] ? norm : (nameToKey[norm] || null);
+}
+
+function applyPastedTeam(t, raw) {
+  const inp    = document.getElementById('paste-' + t);
+  const tokens = raw.split(/[\t\n,]+/).map(s => s.trim()).filter(Boolean);
+
+  if (tokens.length === 0) return;
+
+  const keys      = tokens.map(resolvePokeKey);
+  const unmatched = tokens.filter((_, i) => !keys[i]);
+  const matched   = keys.filter(Boolean);
+
+  const fail = msg => {
+    inp.classList.remove('paste-ok');
+    inp.classList.add('paste-err');
+    setStatus(msg);
+  };
+
+  if (unmatched.length)       return fail('Unknown: ' + unmatched.join(', '));
+  if (matched.length !== 6)   return fail('Need exactly 6 names, got ' + matched.length);
+  if (new Set(matched).size !== 6) return fail('Duplicate Pokémon in paste');
+
+  const conflicts = matched.filter(k => teamKeys(1 - t).includes(k));
+  if (conflicts.length) return fail('Already on other team: ' + conflicts.map(k => pokemonData[k].name).join(', '));
+
+  // Apply to whichever roster mode is active
+  const s = teamState[t];
+  s.roster = [...matched];
+  SLOT_ORDER.forEach((id, i) => { s.slots[id] = matched[i]; });
+
+  inp.value = '';
+  inp.classList.remove('paste-err');
+  inp.classList.add('paste-ok');
+  setTimeout(() => inp.classList.remove('paste-ok'), 1500);
+
+  renderGrid();
+  renderRoster(t);
+  updateSimButton();
+}
+
+document.querySelectorAll('.paste-input').forEach(inp => {
+  // Handle Ctrl+V / right-click paste
+  inp.addEventListener('paste', e => {
+    e.preventDefault();
+    const raw = (e.clipboardData || window.clipboardData).getData('text');
+    inp.value = raw;
+    applyPastedTeam(parseInt(inp.dataset.t), raw);
+  });
+  // Also allow typing + Enter for manual entry
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter') applyPastedTeam(parseInt(inp.dataset.t), inp.value);
+  });
 });
 
 document.getElementById('rand-seed-btn').addEventListener('click', () => {
