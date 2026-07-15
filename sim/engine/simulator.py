@@ -37,7 +37,7 @@ TACKLE_RANGE_M = 1.2          # metres within which a tackle can be attempted
 TACKLE_INTERVAL_TICKS = 5     # cooldown ticks between tackle attempts per player
 PICKUP_RANGE_M = 1.5          # swept-sphere radius for loose-ball pickup
 # Pressing count is now dynamic — see _n_pressers()
-SHOT_COOLDOWN_TICKS = 600     # ticks a player must wait between shots (60 sim-seconds)
+SHOT_COOLDOWN_TICKS = 150     # ticks a player must wait between shots (15 sim-seconds)
 GK_CLAIM_RANGE_M = 2.5        # GK can claim any loose ball within this range in their box
 GK_PA_DEPTH_M = 9.5           # depth (m from goal line) of the GK's priority zone (≈10 yd)
 GK_SHOT_SAVE_RANGE_M = 1.85  # extended dive range for GK when a shot is in flight

@@ -139,9 +139,9 @@ class Decider:
     # MID and FWD share the full 10m range — the bias difference drives selection.
     _ROLE_SHOOT_ZONE_M: dict[Role, float] = {
         Role.GOALKEEPER: 0.0,
-        Role.DEFENDER:   5.0,
-        Role.MIDFIELDER: 7.0,
-        Role.FORWARD:    10.0,
+        Role.DEFENDER:   12.0,
+        Role.MIDFIELDER: 20.0,
+        Role.FORWARD:    25.0,
     }
 
     # Role-based shot bias: reflects real positional shooting responsibility.
