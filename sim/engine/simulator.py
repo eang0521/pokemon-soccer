@@ -37,7 +37,7 @@ TACKLE_RANGE_M = 1.2          # metres within which a tackle can be attempted
 TACKLE_INTERVAL_TICKS = 5     # cooldown ticks between tackle attempts per player
 PICKUP_RANGE_M = 1.5          # swept-sphere radius for loose-ball pickup
 # Pressing count is now dynamic — see _n_pressers()
-SHOT_COOLDOWN_TICKS = 150     # ticks a player must wait between shots (15 sim-seconds)
+SHOT_COOLDOWN_TICKS = 3000    # ticks a player must wait between shots (~5 sim-minutes)
 GK_CLAIM_RANGE_M = 2.5        # GK can claim any loose ball within this range in their box
 GK_PA_DEPTH_M = 9.5           # depth (m from goal line) of the GK's priority zone (≈10 yd)
 GK_SHOT_SAVE_RANGE_M = 1.85  # extended dive range for GK when a shot is in flight
@@ -1066,7 +1066,7 @@ class Simulator:
             shooter = self._last_kicked_by
             shot_q = (shooter.effective_attack + shooter.effective_sp_attack) / 2.0
             save_q = (best.effective_defense + best.effective_sp_defense) / 2.0
-            save_prob = min(0.97, (save_q * 18.0) / (shot_q + save_q * 18.0))
+            save_prob = min(0.90, (save_q * 1.5) / (shot_q + save_q * 1.5))
             if random.random() > save_prob:
                 self._shot_beat_gk = True
                 return False  # GK dives but ball beats them
